@@ -14,6 +14,14 @@ local teto = display.newImageRect( "platform.png", 360, 85 )
 teto.x = display.contentCenterX
 teto.y = display.contentHeight1
 
+local paredeEsquerda = display.newImageRect( "platform.png", 1, 900 )
+paredeEsquerda.x = display.contentCenterX-160
+paredeEsquerda.y = display.contentHeight1
+
+local paredeDireita = display.newImageRect( "platform.png", 1, 900 )
+paredeDireita.x = display.contentCenterX+160
+paredeDireita.y = display.contentHeight1
+
 local tapText = display.newText( tapCount, display.contentCenterX, 20, native.systemFont, 40 )
 
 local platform = display.newImageRect( "platform.png", 350, 85 )
@@ -31,6 +39,8 @@ physics.start()
 physics.addBody( platform, "static" )
 physics.addBody( balloon, "dynamic", { radius=50, bounce=0.3 } )
 physics.addBody( teto, "static" )
+physics.addBody( paredeEsquerda, "static" )
+physics.addBody( paredeDireita, "static" )
 
 local function pushBalloon()
 	balloon:applyLinearImpulse( math.random( -0.76, 0.76 ), -0.75, balloon.x, balloon.y )
