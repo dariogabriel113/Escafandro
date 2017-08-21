@@ -46,6 +46,13 @@ local function pushBalloon()
 	balloon:applyLinearImpulse( math.random( -0.76, 0.76 ), -0.75, balloon.x, balloon.y )
 	tapCount = tapCount + 1
 	tapText.text = tapCount
+	
+	somarOuSubtrair = math.random( 1, 2 )
+	if somarOuSubtrair == 1 then
+		balloon.rotation = balloon.rotation + math.random( 10, 60 )
+	else
+		balloon.rotation = balloon.rotation - math.random( 10, 60 )
+	end
 end
 
 balloon:addEventListener( "tap", pushBalloon )
