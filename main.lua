@@ -11,11 +11,10 @@ background.x = display.contentCenterX
 background.y = display.contentCenterY
 
 local tapText = display.newText( tapCount, display.contentCenterX, 20, native.systemFont, 40 )
-tapText:setFillColor( 0, 0, 0 )
 
-local platform = display.newImageRect( "platform.png", 300, 50 )
+local platform = display.newImageRect( "platform.png", 350, 85 )
 platform.x = display.contentCenterX
-platform.y = display.contentHeight-25
+platform.y = display.contentHeight
 
 local balloon = display.newImageRect( "balloon.png", 112, 112 )
 balloon.x = display.contentCenterX
@@ -29,7 +28,7 @@ physics.addBody( platform, "static" )
 physics.addBody( balloon, "dynamic", { radius=50, bounce=0.3 } )
 
 local function pushBalloon()
-	balloon:applyLinearImpulse( 0, -0.75, balloon.x, balloon.y )
+	balloon:applyLinearImpulse( math.random( -0.76, 0.76 ), -0.75, balloon.x, balloon.y )
 	tapCount = tapCount + 1
 	tapText.text = tapCount
 end
