@@ -13,11 +13,11 @@ escafandro.x = display.contentCenterX
 escafandro.y = display.contentCenterY
 escafandro.alpha = 0.8
 
-local paredeEsquerda = display.newImageRect( "plataforma.png", 1, 900 )
+local paredeEsquerda = display.newImageRect( "plataforma.png", 50, 900 )
 paredeEsquerda.x = display.contentCenterX-160
 paredeEsquerda.y = display.contentHeight1
 
-local paredeDireita = display.newImageRect( "platform.png", 1, 900 )
+local paredeDireita = display.newImageRect( "plataforma2.png", 1, 900 )
 paredeDireita.x = display.contentCenterX+160
 paredeDireita.y = display.contentHeight1
 
