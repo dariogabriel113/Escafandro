@@ -22,7 +22,7 @@ Achar postos para colocar mangueira de respiração; Enfrentar Chefões; Chegar 
 Apos enfrentar o último chefe de fase o  Red submarine na Terra dos submarinos ele acha sua amada sequestrada e voltam para casa no yellow submarine
 
 ## Controles
-Joystick
+Joystick e botões de ação
 
 ## Inimigos
 Animais marinhos de extrema profundidade, Outros mergulhadores, Serpente Marinha, Animais do Conto de Dagon, Kraken, Cthulhu
