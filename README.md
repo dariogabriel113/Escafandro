@@ -25,8 +25,19 @@ Apos enfrentar o último chefe de fase o  Red submarine na Terra dos submarinos 
 Joystick
 
 ## Inimigos
-Animais marinhos de extrema profundidade, Serpente Marinha, Animais do Conto de Dagon, Kraken, Cthulhu
+Animais marinhos de extrema profundidade, Outros mergulhadores, Serpente Marinha, Animais do Conto de Dagon, Kraken, Cthulhu
 
 # Fluxo de Telas
 ![Image Fluxo de Telas](/Telas.png)
 (Não listado Sair do aplicativo)
+
+### Cenário
+Todos os itens, cenarios e vida animal tem ligação com o fundo do mar, principalmente a parte mais profunda.
+Animais abisais, algas, Seres marinhos mitologicos e da literatura
+Cenario "seco", area com bolsão de ar
+
+## Equipamentos
+Arma de Solda, Arma de Ar, Mangueira de Ar
+
+
+
