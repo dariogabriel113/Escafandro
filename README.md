@@ -1,6 +1,3 @@
-# TestesEstagio1
-Testes para a disciplina de Estágio 1
-
 # Nome do Jogo:
 The land of submarines
 
@@ -23,3 +20,13 @@ Achar postos para colocar mangueira de respiração; Enfrentar Chefões; Chegar 
 
 # Como o jogo acaba:
 Apos enfrentar o último chefe de fase o  Red submarine na Terra dos submarinos ele acha sua amada sequestrada e voltam para casa no yellow submarine
+
+## Controles
+Joystick
+
+## Inimigos
+Animais marinhos de extrema profundidade, Serpente Marinha, Animais do Conto de Dagon, Kraken, Cthulhu
+
+# Fluxo de Telas
+![Image Fluxo de Telas](/Telas.png)
+(Não listado Sair do aplicativo)
