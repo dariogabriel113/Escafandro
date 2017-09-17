@@ -56,6 +56,18 @@ btRight1.height = centroX/4
 btRight1.y = (centroY*2) + 10
 btRight1.x = centroX/4 + btLeft1.x
 
+local btUp1 = display.newImage("imagens/bts/btUp1.png")
+btUp1.width = centroX/4
+btUp1.height = centroX/4
+btUp1.y = (centroY*2) - 15
+btUp1.x = centroX/4 + 10
+
+local btDown1 = display.newImage("imagens/bts/btDown1.png")
+btDown1.width = centroX/4
+btDown1.height = centroX/4
+btDown1.y = (centroY*2) + 35
+btDown1.x = centroX/4 + 10
+
 local function moveInimigos( event )
   for i = 0, 4 do
     if (inimigos[i].y + inimigos[i].contentHeight < 0) then
@@ -91,8 +103,26 @@ local function moveDireita( event )
   end
 end
 
+local yAyxs = 0
+local function moveSubir( event )
+  if (event.phase == "began") then
+    yAyxs = -5
+  elseif (event.phase == "ended") then
+    yAyxs = 0
+  end
+end
+
+local function moveDescer( event )
+  if (event.phase == "began") then
+    yAyxs = 5
+  elseif (event.phase == "ended") then
+    yAyxs = 0
+  end
+end
+
 local function atualizaMergulho( event )
   escafandro.x = escafandro.x + xAxys
+  escafandro.y = escafandro.y + yAyxs
 end
 
 
@@ -110,6 +140,8 @@ end
 
 btLeft1:addEventListener("touch", moveEsquerda)
 btRight1:addEventListener("touch", moveDireita)
+btUp1:addEventListener("touch", moveSubir)
+btDown1:addEventListener("touch", moveDescer)
 
 Runtime:addEventListener("enterFrame", atualizaMergulho)
 Runtime:addEventListener("enterFrame", moveEstrelas)
