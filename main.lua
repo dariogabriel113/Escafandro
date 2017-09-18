@@ -13,6 +13,8 @@ local centroY = display.contentCenterY
 local larguraTela = display.contentWidth
 local alturaTela = display.contentHeight+100
 
+local profundidade = 100
+
 local bg = display.newImage("imagens/bgs/bg.png")
 bg.width = larguraTela
 bg.height = alturaTela
@@ -28,7 +30,7 @@ end
 
 
 local escafandro = display.newImageRect( "imagens/player/escafandro.png", 20, 20 )
-escafandro.x = display.contentCenterX
+escafandro.x = centroX
 escafandro.y = alturaTela - alturaTela + 100
 escafandro.alpha = 0.8
 physics.addBody(escafandro, "dynamic")
@@ -125,7 +127,14 @@ local function atualizaMergulho( event )
   escafandro.y = escafandro.y + yAyxs
 end
 
+local contadorVida = 0
+local function vida( event )
 
+  if (escafandro.y < (alturaTela - alturaTela) - 90) then
+    escafandro.y = alturaTela - alturaTela + 100
+    contadorVida = contadorVida+1
+  end
+end
 
 local function moveEstrelas( event )
   for i = 0, 4 do
@@ -135,14 +144,43 @@ local function moveEstrelas( event )
       stars[i].y = stars[i].y - 5
     end
   end
-
 end
+
+local function gameOver( event )
+  local gaming = 1
+  if (gaming == 1) then
+    local indicadorProfundidade = display.newText( profundidade, display.contentCenterX, 20, native.systemFont, 40 )
+    indicadorProfundidade:setFillColor( 0, 0, 0 )
+    local metros = display.newText( "m", display.contentCenterX+50, 20, native.systemFont, 40 )
+    indicadorProfundidade:setFillColor( 0, 0, 0 )
+  end
+  if (contadorVida > 4) then
+    local gameOverTela = display.newImage("imagens/bgs/bg.png")
+    gameOverTela.width = larguraTela
+    gameOverTela.height = alturaTela
+    gameOverTela.x = centroX
+    gameOverTela.y = centroY
+
+    local gameOverTexto = display.newText( "Game Over", centroX, centroY, native.systemFont, 40 )
+
+    gaming = 0
+  end
+end
+
+local qtdMetros = {}
+function qtdMetros:timer( event )
+    profundidade = profundidade + 100
+end
+timer.performWithDelay( 1000, qtdMetros )
 
 btLeft1:addEventListener("touch", moveEsquerda)
 btRight1:addEventListener("touch", moveDireita)
 btUp1:addEventListener("touch", moveSubir)
 btDown1:addEventListener("touch", moveDescer)
 
+Runtime:addEventListener("enterFrame", gameOver)
+Runtime:addEventListener("enterFrame", qtdMetros)
+Runtime:addEventListener("enterFrame", vida)
 Runtime:addEventListener("enterFrame", atualizaMergulho)
 Runtime:addEventListener("enterFrame", moveEstrelas)
 Runtime:addEventListener("enterFrame", moveInimigos)
