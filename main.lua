@@ -3,6 +3,8 @@
 -- main.lua
 --
 -----------------------------------------------------------------------------------------
+local parar = 0
+
 local physics = require("physics")
 physics.start()
 physics.setGravity(0,0)
@@ -21,6 +23,12 @@ bg.height = alturaTela
 bg.x = centroX
 bg.y = centroY
 
+local blocosDeVidas = display.newImage("imagens/bgs/bg.png")
+bg.width = larguraTela
+bg.height = alturaTela
+bg.x = centroX
+bg.y = centroY
+
 local stars = {}
 for i=0, 4 do
   stars[i] = display.newImage("imagens/bgs/stars.png")
@@ -28,17 +36,16 @@ for i=0, 4 do
   stars[i].y = alturaTela - i * stars[i].contentHeight
 end
 
-
 local escafandro = display.newImageRect( "imagens/player/escafandro.png", 20, 20 )
 escafandro.x = centroX
 escafandro.y = alturaTela - alturaTela + 100
 escafandro.alpha = 0.8
 physics.addBody(escafandro, "dynamic")
---escafandro.isFixedRotation = true
+escafandro.isFixedRotation = true
 
 local inimigos = {}
 for i=0, 4 do
-  inimigos[i] = display.newImage("imagens/objetos/asteroid1.png")
+  inimigos[i] = display.newImage("imagens/inimigos/enemy.png")
   inimigos[i].y = alturaTela * 2
   inimigos[i].x = math.random((larguraTela - larguraTela + inimigos[i].contentWidth), (larguraTela+ inimigos[i].contentWidth))
   physics.addBody(inimigos[i], "dynamic")
@@ -71,70 +78,85 @@ btDown1.y = (centroY*2) + 35
 btDown1.x = centroX/4 + 10
 
 local function moveInimigos( event )
-  for i = 0, 4 do
-    if (inimigos[i].y + inimigos[i].contentHeight < 0) then
-      inimigos[i].y = alturaTela + inimigos[i].contentHeight
-      inimigos[i].x = math.random((larguraTela - larguraTela + inimigos[i].contentWidth), (larguraTela+ inimigos[i].contentWidth))
-    else
-      inimigos[i].y = inimigos[i].y - 5
+  if (parar == 0) then
+    for i = 0, 4 do
+      if (inimigos[i].y + inimigos[i].contentHeight < 0) then
+        inimigos[i].y = alturaTela + inimigos[i].contentHeight
+        inimigos[i].x = math.random((larguraTela - larguraTela + inimigos[i].contentWidth), (larguraTela+ inimigos[i].contentWidth))
+      else
+        inimigos[i].y = inimigos[i].y - 5
+      end
     end
   end
 end
 
 local function colideInimigo( event )
-  if (event.phase == "began") then
-    Runtime:removeEventListener("enterFrame", atualizaMergulho)
-    escafandro:removeSelf()
+  if (parar == 0) then
+    if (event.phase == "began") then
+      Runtime:removeEventListener("enterFrame", atualizaMergulho)
+      escafandro:removeSelf()
+    end
   end
 end
 
 local xAxys = 0
 local function moveEsquerda( event )
-  if (event.phase == "began") then
-    xAxys = -5
-  elseif (event.phase == "ended") then
-    xAxys = 0
+  if (parar == 0) then
+    if (event.phase == "began") then
+      xAxys = -5
+    elseif (event.phase == "ended") then
+      xAxys = 0
+    end
   end
 end
 
 local function moveDireita( event )
-  if (event.phase == "began") then
-    xAxys = 5
-  elseif (event.phase == "ended") then
-    xAxys = 0
+  if (parar == 0) then
+    if (event.phase == "began") then
+      xAxys = 5
+    elseif (event.phase == "ended") then
+      xAxys = 0
+    end
   end
 end
 
 local yAyxs = 0
 local function moveSubir( event )
-  if (event.phase == "began") then
-    yAyxs = -5
-  elseif (event.phase == "ended") then
-    yAyxs = 0
+  if (parar == 0) then
+    if (event.phase == "began") then
+      yAyxs = -5
+    elseif (event.phase == "ended") then
+      yAyxs = 0
+    end
   end
 end
 
 local function moveDescer( event )
-  if (event.phase == "began") then
-    yAyxs = 5
-  elseif (event.phase == "ended") then
-    yAyxs = 0
+  if (parar == 0) then
+    if (event.phase == "began") then
+      yAyxs = 5
+    elseif (event.phase == "ended") then
+      yAyxs = 0
+    end
   end
 end
 
 local function atualizaMergulho( event )
-  escafandro.x = escafandro.x + xAxys
-  escafandro.y = escafandro.y + yAyxs
+  if (parar == 0) then
+    escafandro.x = escafandro.x + xAxys
+    escafandro.y = escafandro.y + yAyxs
+  end
 end
 
 local contadorVida = 0
 local function vida( event )
 
-  if (escafandro.y < (alturaTela - alturaTela) - 90) then
+  if (escafandro.y < (alturaTela - alturaTela) - 30) then
     escafandro.y = alturaTela - alturaTela + 100
     contadorVida = contadorVida+1
   end
 end
+
 
 local function moveEstrelas( event )
   for i = 0, 4 do
@@ -143,17 +165,21 @@ local function moveEstrelas( event )
     else
       stars[i].y = stars[i].y - 5
     end
+    if(parar == 0) then
+      profundidade = profundidade+1
+    end
   end
 end
 
+local function mostraProfundidade( event )
+  local indicadorProfundidade = display.newText( profundidade, centroX/4, 0, native.systemFont, 40 )
+  indicadorProfundidade:setFillColor( 0, 0, 0 )
+  local metros = display.newText( "m", centroX/4 + 30, 0, native.systemFont, 40 )
+  metros:setFillColor( 0, 0, 0 )
+  indicadorProfundidade.text = profundidade
+end
+
 local function gameOver( event )
-  local gaming = 1
-  if (gaming == 1) then
-    local indicadorProfundidade = display.newText( profundidade, display.contentCenterX, 20, native.systemFont, 40 )
-    indicadorProfundidade:setFillColor( 0, 0, 0 )
-    local metros = display.newText( "m", display.contentCenterX+50, 20, native.systemFont, 40 )
-    indicadorProfundidade:setFillColor( 0, 0, 0 )
-  end
   if (contadorVida > 4) then
     local gameOverTela = display.newImage("imagens/bgs/bg.png")
     gameOverTela.width = larguraTela
@@ -161,26 +187,28 @@ local function gameOver( event )
     gameOverTela.x = centroX
     gameOverTela.y = centroY
 
-    local gameOverTexto = display.newText( "Game Over", centroX, centroY, native.systemFont, 40 )
+    prof = profundidade
 
-    gaming = 0
+    local gameOverTexto = display.newText( "Game Over", centroX, centroY, native.systemFont, 40 )
+    local imprimeProfundidade = display.newText( prof, centroX, centroY+30, native.systemFont, 40 )
+    parar = 1
   end
 end
 
-local qtdMetros = {}
-function qtdMetros:timer( event )
-    profundidade = profundidade + 100
+if (parar == 0) then
+  Runtime:addEventListener("enterFrame", mostraProfundidade)
+  Runtime:addEventListener("enterFrame", atualizaMergulho)
+  Runtime:addEventListener("enterFrame", moveEstrelas)
+  Runtime:addEventListener("enterFrame", moveInimigos)
+
+  btLeft1:addEventListener("touch", moveEsquerda)
+  btRight1:addEventListener("touch", moveDireita)
+  btUp1:addEventListener("touch", moveSubir)
+  btDown1:addEventListener("touch", moveDescer)
 end
-timer.performWithDelay( 1000, qtdMetros )
 
-btLeft1:addEventListener("touch", moveEsquerda)
-btRight1:addEventListener("touch", moveDireita)
-btUp1:addEventListener("touch", moveSubir)
-btDown1:addEventListener("touch", moveDescer)
 
-Runtime:addEventListener("enterFrame", gameOver)
-Runtime:addEventListener("enterFrame", qtdMetros)
+
+
 Runtime:addEventListener("enterFrame", vida)
-Runtime:addEventListener("enterFrame", atualizaMergulho)
-Runtime:addEventListener("enterFrame", moveEstrelas)
-Runtime:addEventListener("enterFrame", moveInimigos)
+Runtime:addEventListener("enterFrame", gameOver)
