@@ -15,7 +15,7 @@ local centroY = display.contentCenterY
 local larguraTela = display.contentWidth
 local alturaTela = display.contentHeight+100
 
-local profundidade = 100
+local profundidade = 60
 
 local bg = display.newImage("imagens/bgs/bg.png")
 bg.width = larguraTela
@@ -165,17 +165,17 @@ local function moveEstrelas( event )
     else
       stars[i].y = stars[i].y - 5
     end
-    if(parar == 0) then
-      profundidade = profundidade+1
-    end
+  end
+  if(parar == 0) then
+    profundidade = profundidade+1
   end
 end
 
+local indicadorProfundidade = display.newText( profundidade/60, centroX/4, 0, native.systemFont, 40 )
+indicadorProfundidade:setFillColor( 0, 0, 0 )
+
 local function mostraProfundidade( event )
-  local indicadorProfundidade = display.newText( profundidade, centroX/4, 0, native.systemFont, 40 )
-  indicadorProfundidade:setFillColor( 0, 0, 0 )
-  local metros = display.newText( "m", centroX/4 + 30, 0, native.systemFont, 40 )
-  metros:setFillColor( 0, 0, 0 )
+  local totalProfundidade = (profundidade/60)/100
   indicadorProfundidade.text = profundidade
 end
 
