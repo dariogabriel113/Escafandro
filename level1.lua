@@ -105,24 +105,10 @@ local function createEnemy()
 
 	local whereFrom =  math.random(4)
 
-	if(whereFrom == 1) then
-		newenemy.x = -60
-		newenemy.y = math.random(display.contentHeight)
-		newenemy:setLinearVelocity(math.random(40, 120), math.random(-40, 40))
-	elseif(whereFrom == 2) then
-		newenemy.x = math.random(display.contentWidth)
-		newenemy.y = -60
-		newenemy:setLinearVelocity(math.random(-40, 40), math.random(40, 120))
-	elseif(whereFrom == 3) then
-		newenemy.x = display.contentWidth + 60
-		newenemy.y = math.random(display.contentHeight)
-		newenemy:setLinearVelocity(math.random(-120, -40), math.random(-40, 40))
-	elseif(whereFrom == 4) then
-		newenemy.x = math.random(display.contentWidth)
-		newenemy.y = -60
-		newenemy:setLinearVelocity(math.random(-40, 40), math.random(-120, -40))
-	end
-	newenemy:applyTorque(math.random(-1, 1))
+	newenemy.y = alturaTela -100
+	newenemy.x = math.random(0, (larguraTela))
+	newenemy.isFixedRotation = true
+	newenemy:setLinearVelocity(0, math.random(2, 6))
 end
 -------------------------------------------------------------------------------
 
@@ -231,16 +217,6 @@ local function onCollision(event)
 end
 ---------------------------------------------------------------------------------------------------------------------
 
-----------------------------------------------------------------------------------------------------------------------
-local indicadorContagem = display.newText(contador, centroX, centroX, native.systemFont, 80 )
-
-local function mostraContagem( event )
-	count = contador
-	indicadorContagem.text = count
-	indicadorContagem:setFillColor(1, 1, 1, 1)
-end
----------------------------------------------------------------------------------------------------------------------------------
-
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
 -- -----------------------------------------------------------------------------------
@@ -271,7 +247,7 @@ function scene:create( event )
 
 	player = display.newImageRect( "imagens/player/escafandro.png", 20, 20 )
 	player.x = centroX
-	player.y = centroY
+	player.y = centroY - centroY/2
 	physics.addBody(player, {radius = 15, isSensor = true})
 	player.myName = "player"
 
@@ -285,8 +261,6 @@ function scene:create( event )
 	setupGun()
 	setupjoystick1()
 end
-
-Runtime:addEventListener("enterFrame", mostraContagem)
 
 
 -- show()
