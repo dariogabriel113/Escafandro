@@ -276,8 +276,10 @@ function scene:create( event )
 	player.myName = "player"
 
 
-	local menuButton = display.newText(uiGroup, "Menu", centroX, 920, native.systemFont, 44)
-	menuButton:setFillColor(1, 1, 1, 1)
+	local menuButton = display.newImageRect(uiGroup, "imagens/botoes/pause.png", 120, 120 )
+	menuButton.x = centroX
+	menuButton.y = 920
+	menuButton.alpha = 0.25
 	menuButton:addEventListener("tap", endGame)
 
 	setupGun()
