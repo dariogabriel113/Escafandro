@@ -39,7 +39,7 @@ local function setupController(displayGroup)
 		nToCRatio = 0.5,
 		radius = 60,
 		x = 200,
-		y = alturaTela - 100,
+		y = alturaTela,
 		restingXValue = 0,
 		restingYValue = 0,
 		rangeX = 200,
@@ -53,7 +53,7 @@ local function setupController(displayGroup)
 		nToCRatio = 0.5,
 		radius = 60,
 		x = larguraTela - 200,
-		y = alturaTela - 100,
+		y = alturaTela,
 		restingXValue = 0,
 		restingYValue = 0,
 		rangeX = 600,
@@ -76,7 +76,7 @@ local centroX = display.contentCenterX
 local centroY = display.contentCenterY
 
 local enemyTable = {}
-local maxEnemies = 50
+local maxEnemies = 5
 
 local died = false
 
@@ -105,10 +105,11 @@ local function createEnemy()
 
 	local whereFrom =  math.random(4)
 
-	newenemy.y = alturaTela -100
+	newenemy.y = alturaTela - 200
 	newenemy.x = math.random(0, (larguraTela))
 	newenemy.isFixedRotation = true
 	newenemy:setLinearVelocity(0, math.random(2, 6))
+
 end
 -------------------------------------------------------------------------------
 
@@ -152,7 +153,18 @@ function fireSinglebullet()
 	return true
 end
 --------------------------------------------------------------------------------------
+local function moveInimigos( event )
+	for i = #enemyTable, 1, -1 do
+		local en = enemyTable[i]
 
+		if(en.y + en.contentHeight < 0) then
+			en.y = alturaTela + en.contentHeight
+			en.x = math.random((larguraTela - larguraTela + en.contentWidth), (larguraTela+ en.contentWidth))
+			else
+	        en.y = en.y - 5
+		end
+	end
+end
 -----------------------------------------------------------------------------------
 local function gameLoop()
 	createEnemy()
@@ -206,7 +218,7 @@ local function onCollision(event)
 				died = true
 
 				player.alpha = 0
-				transition.to(player, {x = centroX, y = centroY, alpha = 1, time = 500,
+				transition.to(player, {x = centroX, y = centroY/4, alpha = 1, time = 500,
 					onComplete = function()
 						died = false
 					end
@@ -214,6 +226,15 @@ local function onCollision(event)
 			end
 		end
 	end
+end
+
+local contadorVida = 4
+local function vida( event )
+
+  if (escafandro.y < (alturaTela - alturaTela) - 30) then
+    escafandro.y = alturaTela - alturaTela + 100
+    contadorVida = contadorVida-1
+  end
 end
 ---------------------------------------------------------------------------------------------------------------------
 
@@ -241,20 +262,23 @@ function scene:create( event )
 	setupController(uiGroup)
 
 
-	local background = display.newImageRect(backGroup, "imagens/bgs/bg.png", 800, 1400)
-	background.x = centroX
-	background.y = centroY
+	 local background = display.newImageRect(backGroup, "imagens/bgs/bg.png", 800, 1400)
+	 background.x = centroX
+	 background.y = centroY
 
-	player = display.newImageRect( "imagens/player/escafandro.png", 20, 20 )
+	-- local background = display.newImage("background.png",0,0,display.contentWidth , display.contentHeight + 1000) -- cria uma nova imagem de fundo
+	-- background.myName = "fundo"
+
+	player = display.newImageRect( "imagens/player/escafandro.png", 70, 70 )
 	player.x = centroX
-	player.y = centroY - centroY/2
+	player.y = centroY/4
 	physics.addBody(player, {radius = 15, isSensor = true})
 	player.myName = "player"
 
 
 	local menuButton = display.newImageRect(uiGroup, "imagens/botoes/pause.png", 120, 120 )
 	menuButton.x = centroX
-	menuButton.y = 920
+	menuButton.y = alturaTela
 	menuButton.alpha = 0.25
 	menuButton:addEventListener("tap", endGame)
 
@@ -276,6 +300,7 @@ function scene:show( event )
 		-- Code here runs when the scene is entirely on screen
 		physics.start()
 		Runtime:addEventListener("collision", onCollision)
+		Runtime:addEventListener("enterFrame", moveInimigos)
 		gameLoopTimer = timer.performWithDelay(500, gameLoop, 0)
 	end
 end
@@ -295,6 +320,7 @@ function scene:hide( event )
 	elseif ( phase == "did" ) then
 		-- Code here runs immediately after the scene goes entirely off screen
 		Runtime:removeEventListener("collision", onCollision)
+		Runtime:removeEventListener("enterFrame", moveInimigos)
 		physics.pause()
 		composer.removeScene("timerbasedexample")
 	end
