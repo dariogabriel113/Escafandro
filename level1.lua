@@ -197,6 +197,12 @@ end
 local function gameOver()
 	if(contadorVida <= 0) then
 		player.alpha = 0
+		barraDeVida.alpha = 0
+		hp1.alpha = 0
+		hp2.alpha = 0
+		hp3.alpha = 0
+		hp4.alpha = 0
+		titleHP.alpha = 0
 		composer.gotoScene("gameOver")
 	end
 end
@@ -281,6 +287,28 @@ function scene:create( event )
 	player.y = centroY/4
 	physics.addBody(player, {radius = 15, isSensor = true})
 	player.myName = "player"
+
+	barraDeVida = display.newImageRect("imagens/bgs/life.png", 200, 50)
+	barraDeVida.x = 200
+	barraDeVida.y = alturaTela-alturaTela-100
+
+	hp1 = display.newImageRect("imagens/bgs/vidaEsquerda.png", 50, 50)
+	hp1.x = barraDeVida.y + barraDeVida.contentWidth + (hp1.contentWidth/2)
+	hp1.y = barraDeVida.y
+
+	hp2 = display.newImageRect("imagens/bgs/vida.png", 50, 50)
+	hp2.x = hp1.x + hp1.contentWidth
+	hp2.y = barraDeVida.y
+
+	hp3 = display.newImageRect("imagens/bgs/vida.png", 50, 50)
+	hp3.x = hp2.x + hp2.contentWidth
+	hp3.y = barraDeVida.y
+
+	hp4 = display.newImageRect("imagens/bgs/vidaDireita.png", 50, 50)
+	hp4.x = hp3.x + hp3.contentWidth
+	hp4.y = barraDeVida.y
+
+	titleHP = display.newText(sceneGroup, "Vida", hp1.x - 55, barraDeVida.y, native.systemFont, 29)
 
 
 	local menuButton = display.newImageRect(uiGroup, "imagens/botoes/pause.png", 120, 120 )
