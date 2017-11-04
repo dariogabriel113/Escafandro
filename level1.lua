@@ -105,7 +105,7 @@ local function createEnemy()
 
 	local whereFrom =  math.random(4)
 
-	newenemy.y = alturaTela - 200
+	newenemy.y = alturaTela
 	newenemy.x = math.random(0, (larguraTela))
 	newenemy.isFixedRotation = true
 	newenemy:setLinearVelocity(0, math.random(2, 6))
@@ -172,8 +172,8 @@ local function gameLoop()
 	for i = #enemyTable, 1, -1 do
 		local en = enemyTable[i]
 
-		if(en.x < -100 or en.x > display.contentWidth + 100
-			or en.y < -100 or en.y > display.contentHeight + 100) then
+		if(en.x < -500 or en.x > display.contentWidth + 500
+			or en.y < -700 or en.y > display.contentHeight + 500) then
 
 			display.remove(en)
 			table.remove(enemyTable, i)
@@ -193,10 +193,10 @@ end
 local function endGame()
 	composer.gotoScene("menu")
 end
-local sumir = 0
+
 local function gameOver()
-	sumir = 1
 	if(contadorVida <= 0) then
+		player.alpha = 0
 		composer.gotoScene("gameOver")
 	end
 end
@@ -272,13 +272,9 @@ function scene:create( event )
 
 	setupController(uiGroup)
 
-
-	 local background = display.newImageRect(backGroup, "imagens/bgs/bg.png", 800, 1400)
-	 background.x = centroX
-	 background.y = centroY
-
-	-- local background = display.newImage("background.png",0,0,display.contentWidth , display.contentHeight + 1000) -- cria uma nova imagem de fundo
-	-- background.myName = "fundo"
+	local background = display.newImageRect(backGroup, "imagens/bgs/bg.png", 800, 1400)
+	background.x = centroX
+	background.y = centroY
 
 	player = display.newImageRect( "imagens/player/escafandro.png", 70, 70 )
 	player.x = centroX

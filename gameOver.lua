@@ -33,6 +33,7 @@ function scene:show( event )
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
 	end
+	
 end
 
 -- hide()
