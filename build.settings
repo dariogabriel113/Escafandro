@@ -25,30 +25,6 @@ settings =
 	},
 
 	--
-	-- iOS section
-	--
-	iphone =
-	{
-		plist =
-		{
-			UIStatusBarHidden = false,
-			UILaunchStoryboardName = "LaunchScreen",
-			CFBundleIconFiles =
-			{
-				"Icon-40.png",
-				"Icon-58.png",
-				"Icon-76.png",
-				"Icon-80.png",
-				"Icon-87.png",
-				"Icon-120.png",
-				"Icon-152.png",
-				"Icon-167.png",
-				"Icon-180.png",
-			},
-		},
-	},
-
-	--
 	-- Plugins section
 	--
 	plugins =

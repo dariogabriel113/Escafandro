@@ -181,11 +181,27 @@ local function gameLoop()
 	end
 end
 -------------------------------------------------------------------------------------
+local contadorVida = 4
+local function vida( event )
 
+  if (escafandro.y < (alturaTela - alturaTela) - 30) then
+    escafandro.y = alturaTela - alturaTela + 100
+    contadorVida = contadorVida-1
+  end
+end
 --------------------------------------------------------------------------------------
 local function endGame()
 	composer.gotoScene("menu")
 end
+local sumir = 0
+local function gameOver()
+	sumir = 1
+	if(contadorVida <= 0) then
+		composer.gotoScene("gameOver")
+	end
+end
+
+Runtime:addEventListener("enterFrame", gameOver)
 --------------------------------------------------------------------------------------
 
 -------------------------------------------------------------------------------------
@@ -216,11 +232,13 @@ local function onCollision(event)
 		then
 			if(died == false) then
 				died = true
+				contadorVida = contadorVida-1
 
 				player.alpha = 0
-				transition.to(player, {x = centroX, y = centroY/4, alpha = 1, time = 500,
+				transition.to(player, {x = centroX, y = centroY/4, time = 1000,
 					onComplete = function()
 						died = false
+						player.alpha = 1
 					end
 				})
 			end
@@ -228,14 +246,7 @@ local function onCollision(event)
 	end
 end
 
-local contadorVida = 4
-local function vida( event )
 
-  if (escafandro.y < (alturaTela - alturaTela) - 30) then
-    escafandro.y = alturaTela - alturaTela + 100
-    contadorVida = contadorVida-1
-  end
-end
 ---------------------------------------------------------------------------------------------------------------------
 
 -- -----------------------------------------------------------------------------------
