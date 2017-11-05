@@ -4,6 +4,9 @@ local scene = composer.newScene()
 
 local function gotoTimerBasedExample()
   timer.resume(contadorDeTempoTimer)
+  timer.resume(gameLoopTimer)
+  timer.resume(fireTimer)
+  timer.resume(movementTimer)
 	composer.gotoScene("level1")
 end
 

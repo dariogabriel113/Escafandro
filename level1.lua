@@ -79,11 +79,6 @@ local maxEnemies = 5
 
 local died = false
 
-local player
-local gameLoopTimer
-local fireTimer
-local movementTimer
-
 local backGroup
 local mainGroup
 local uiGroup
@@ -369,9 +364,9 @@ function scene:hide( event )
 	local phase = event.phase
 
 	if ( phase == "will" ) then
-		timer.cancel(gameLoopTimer)
-		timer.cancel(fireTimer)
-		timer.cancel(movementTimer)
+		timer.pause(gameLoopTimer)
+		timer.pause(fireTimer)
+		timer.pause(movementTimer)
 
 	elseif ( phase == "did" ) then
 		-- Code here runs immediately after the scene goes entirely off screen
