@@ -30,7 +30,6 @@ system.activate("multitouch")
 -- These are variables to hold the joysticks so that I can
 -- use them in a timer later on
 
-local contador = 0
 local joystick1
 local joystick2
 
@@ -202,7 +201,8 @@ local function vida( event )
 end
 --------------------------------------------------------------------------------------
 local function endGame()
-	composer.gotoScene("menu")
+	timer.pause(contadorDeTempoTimer)
+	composer.gotoScene("pause")
 end
 
 local function gameOver()
@@ -231,7 +231,6 @@ local function onCollision(event)
 			for i = #enemyTable, 1, -1 do
 				if(enemyTable[i] == ob1 or enemyTable[i] == ob2) then
 					table.remove(enemyTable, i)
-					contador = contador + 1
 					break
 				end
 			end
@@ -314,12 +313,29 @@ function scene:create( event )
 
 	titleHP = display.newText(sceneGroup, "Vida", hp1.x - 55, barraDeVida.y, native.systemFont, 29)
 
+	profundidade = 100
+
+	indicadorProfundidade = display.newText(sceneGroup, profundidade, larguraTela-100, alturaTela-alturaTela-100, native.systemFont, 29)
+
+	function contadorDeTempo( event )
+		print( "contadorDeTempo called" )
+		profundidade = profundidade + 10
+		print( profundidade )
+	end
+
+	contadorDeTempoTimer = timer.performWithDelay( 1000, contadorDeTempo, 1000 )
+
+	function mostraProfundidade( event )
+		indicadorProfundidade.text = profundidade
+	end
 
 	local menuButton = display.newImageRect(uiGroup, "imagens/botoes/pause.png", 120, 120 )
 	menuButton.x = centroX
 	menuButton.y = alturaTela
 	menuButton.alpha = 0.25
 	menuButton:addEventListener("tap", endGame)
+
+	Runtime:addEventListener("enterFrame", mostraProfundidade)
 
 	setupGun()
 	setupjoystick1()
