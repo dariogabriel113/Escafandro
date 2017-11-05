@@ -5,7 +5,8 @@ local scene = composer.newScene()
 local function gotoTimerBasedExample()
 	composer.gotoScene("level1")
 end
-
+local larguraTela = display.contentWidth
+local alturaTela = display.contentHeight
 -- create()
 function scene:create( event )
 
@@ -18,7 +19,11 @@ function scene:create( event )
 	background.x = centroX
 	background.y = centroY
 
-	local title = display.newText(sceneGroup, "Game Over", centroX, 200, native.systemFont, 44)
+	local title = display.newText(sceneGroup, "Game Over", centroX, alturaTela-alturaTela, native.systemFont, 50)
+
+	local profundidadeTexto = display.newText(sceneGroup, "Profundidade Maxima", centroX, 350, native.systemFont, 44)
+	local profundidadeTotal = display.newText(sceneGroup, profundidade, centroX, 400, native.systemFont, 44)
+	local m = display.newText(sceneGroup, "m", profundidadeTotal.x + profundidadeTotal.contentWidth, 400, native.systemFont, 44)
 
 end
 
@@ -33,7 +38,7 @@ function scene:show( event )
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
 	end
-	
+
 end
 
 -- hide()

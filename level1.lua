@@ -202,6 +202,7 @@ end
 
 local function gameOver()
 	if(contadorVida <= 0) then
+		timer.cancel(contadorDeTempoTimer)
 		composer.gotoScene("gameOver")
 	end
 end
