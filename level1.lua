@@ -181,13 +181,24 @@ local function gameLoop()
 	end
 end
 -------------------------------------------------------------------------------------
-local contadorVida = 4
+contadorVida = 4
 local function vida( event )
 
-  if (escafandro.y < (alturaTela - alturaTela) - 30) then
-    escafandro.y = alturaTela - alturaTela + 100
+  if (player.y < (alturaTela - alturaTela) - 200) then
+    player.y = alturaTela - alturaTela
     contadorVida = contadorVida-1
   end
+	if (contadorVida == 3) then
+		hp4.alpha = 0
+	end
+
+	if (contadorVida == 2) then
+		hp3.alpha = 0
+	end
+
+	if (contadorVida == 1) then
+		hp2.alpha = 0
+	end
 end
 --------------------------------------------------------------------------------------
 local function endGame()
@@ -196,13 +207,6 @@ end
 
 local function gameOver()
 	if(contadorVida <= 0) then
-		player.alpha = 0
-		barraDeVida.alpha = 0
-		hp1.alpha = 0
-		hp2.alpha = 0
-		hp3.alpha = 0
-		hp4.alpha = 0
-		titleHP.alpha = 0
 		composer.gotoScene("gameOver")
 	end
 end
@@ -282,29 +286,29 @@ function scene:create( event )
 	background.x = centroX
 	background.y = centroY
 
-	player = display.newImageRect( "imagens/player/escafandro.png", 70, 70 )
+	player = display.newImageRect(sceneGroup, "imagens/player/escafandro.png", 70, 70 )
 	player.x = centroX
 	player.y = centroY/4
 	physics.addBody(player, {radius = 15, isSensor = true})
 	player.myName = "player"
 
-	barraDeVida = display.newImageRect("imagens/bgs/life.png", 200, 50)
+	barraDeVida = display.newImageRect(sceneGroup, "imagens/bgs/life.png", 200, 50)
 	barraDeVida.x = 200
 	barraDeVida.y = alturaTela-alturaTela-100
 
-	hp1 = display.newImageRect("imagens/bgs/vidaEsquerda.png", 50, 50)
+	hp1 = display.newImageRect(sceneGroup, "imagens/bgs/vidaEsquerda.png", 50, 50)
 	hp1.x = barraDeVida.y + barraDeVida.contentWidth + (hp1.contentWidth/2)
 	hp1.y = barraDeVida.y
 
-	hp2 = display.newImageRect("imagens/bgs/vida.png", 50, 50)
+	hp2 = display.newImageRect(sceneGroup, "imagens/bgs/vida.png", 50, 50)
 	hp2.x = hp1.x + hp1.contentWidth
 	hp2.y = barraDeVida.y
 
-	hp3 = display.newImageRect("imagens/bgs/vida.png", 50, 50)
+	hp3 = display.newImageRect(sceneGroup, "imagens/bgs/vida.png", 50, 50)
 	hp3.x = hp2.x + hp2.contentWidth
 	hp3.y = barraDeVida.y
 
-	hp4 = display.newImageRect("imagens/bgs/vidaDireita.png", 50, 50)
+	hp4 = display.newImageRect(sceneGroup, "imagens/bgs/vidaDireita.png", 50, 50)
 	hp4.x = hp3.x + hp3.contentWidth
 	hp4.y = barraDeVida.y
 
@@ -336,6 +340,7 @@ function scene:show( event )
 		physics.start()
 		Runtime:addEventListener("collision", onCollision)
 		Runtime:addEventListener("enterFrame", moveInimigos)
+		Runtime:addEventListener("enterFrame", vida)
 		gameLoopTimer = timer.performWithDelay(500, gameLoop, 0)
 	end
 end
@@ -356,6 +361,7 @@ function scene:hide( event )
 		-- Code here runs immediately after the scene goes entirely off screen
 		Runtime:removeEventListener("collision", onCollision)
 		Runtime:removeEventListener("enterFrame", moveInimigos)
+		Runtime:removeEventListener("enterFrame", vida)
 		physics.pause()
 		composer.removeScene("timerbasedexample")
 	end
