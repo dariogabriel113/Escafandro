@@ -83,25 +83,26 @@ local backGroup
 local mainGroup
 local uiGroup
 -----------------------------------------------------------------
-
+parar = 1
 -----------------------------------------------------------------
 local function createEnemy()
-	if(#enemyTable == maxEnemies) then
-		return true
+	if(parar == 1) then
+		if(#enemyTable == maxEnemies) then
+			return true
+		end
+
+		local newenemy = display.newImageRect(mainGroup, "imagens/inimigos/enemy.png" , 100, 100)
+
+
+		table.insert(enemyTable, newenemy)
+		physics.addBody(newenemy, "dynamic", {width = 40, height = 40, bounce = 0.8})
+		newenemy.myName = "enemy"
+
+		newenemy.y = alturaTela
+		newenemy.x = math.random(0, (larguraTela))
+		newenemy.isFixedRotation = true
+		newenemy:setLinearVelocity(0, math.random(2, 6))
 	end
-
-	local newenemy = display.newImageRect(mainGroup, "imagens/inimigos/enemy.png" , 100, 100)
-
-
-	table.insert(enemyTable, newenemy)
-	physics.addBody(newenemy, "dynamic", {width = 40, height = 40, bounce = 0.8})
-	newenemy.myName = "enemy"
-
-	newenemy.y = alturaTela
-	newenemy.x = math.random(0, (larguraTela))
-	newenemy.isFixedRotation = true
-	newenemy:setLinearVelocity(0, math.random(2, 6))
-
 end
 -------------------------------------------------------------------------------
 
@@ -151,7 +152,7 @@ local function moveInimigos( event )
 
 		if(en.y + en.contentHeight < 0) then
 			en.y = alturaTela + en.contentHeight
-			en.x = math.random((larguraTela - larguraTela - en.contentWidth), (larguraTela + en.contentWidth))
+			en.x = math.random((larguraTela - larguraTela + en.contentWidth), (larguraTela + en.contentWidth))
 		else
 			en.y = en.y - 10
 			randomEsqDir = math.random(1, 2)
@@ -167,7 +168,9 @@ local function moveInimigos( event )
 end
 -----------------------------------------------------------------------------------
 local function gameLoop()
-	createEnemy()
+	if(parar == 1) then
+		createEnemy()
+	end
 
 	for i = #enemyTable, 1, -1 do
 		local en = enemyTable[i]
@@ -177,6 +180,13 @@ local function gameLoop()
 
 			display.remove(en)
 			table.remove(enemyTable, i)
+		end
+		if(parar == 0) then
+			if(en.x < -500 or en.x > display.contentWidth + 500
+				or en.y < -700 or en.y > display.contentHeight + 500) then
+				display.remove(en)
+				table.remove(enemyTable, i)
+			end
 		end
 	end
 end
@@ -325,12 +335,21 @@ function scene:create( event )
 		profundidade = profundidade + 10
 		print( profundidade )
 
-		if(profundidade == 500) then
-			maxEnemies = maxEnemies + 1
-		end
+		if(profundidade == 1010) then
+			maxEnemies = maxEnemies - 9
+			parar = 0
+			timer.pause(contadorDeTempoTimer)
+			physics.setGravity(0, 0.3)
 
-		if(profundidade == 1000) then
-			maxEnemies = maxEnemies + 4
+			maeEnemy = display.newImageRect(sceneGroup, "imagens/inimigos/enemy.png" , 500, 500 )
+			maeEnemy.x = centroX
+			maeEnemy.y = centroY
+			physics.addBody(player, {radius = 15, isSensor = true})
+			maeEnemy.myName = "maeEnemy"
+		elseif(profundidade == 500) then
+			maxEnemies = maxEnemies + 1
+		elseif(profundidade == 1000) then
+				maxEnemies = maxEnemies + 4
 		end
 
 		print( maxEnemies )
