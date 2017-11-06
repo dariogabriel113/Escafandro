@@ -6,8 +6,8 @@ local physics = require("physics")
 physics.start()
 physics.setGravity(0, 0)
 
-local alturaTela = display.contentHeight
-local larguraTela = display.contentWidth
+alturaTela = display.contentHeight
+larguraTela = display.contentWidth
 
 --------------------------------------------------------------------------------------
 -- VIRTUAL CONTROLLER CODE
@@ -71,11 +71,11 @@ end
 ----------------------------------------------------------------------------------------
 
 --------------------------------------------------------------------
-local centroX = display.contentCenterX
-local centroY = display.contentCenterY
+centroX = display.contentCenterX
+centroY = display.contentCenterY
 
 local enemyTable = {}
-local maxEnemies = 5
+maxEnemies = 5
 
 local died = false
 
@@ -96,8 +96,6 @@ local function createEnemy()
 	table.insert(enemyTable, newenemy)
 	physics.addBody(newenemy, "dynamic", {width = 40, height = 40, bounce = 0.8})
 	newenemy.myName = "enemy"
-
-	local whereFrom =  math.random(4)
 
 	newenemy.y = alturaTela
 	newenemy.x = math.random(0, (larguraTela))
@@ -153,10 +151,18 @@ local function moveInimigos( event )
 
 		if(en.y + en.contentHeight < 0) then
 			en.y = alturaTela + en.contentHeight
-			en.x = math.random((larguraTela - larguraTela + en.contentWidth), (larguraTela+ en.contentWidth))
+			en.x = math.random((larguraTela - larguraTela - en.contentWidth), (larguraTela + en.contentWidth))
+		else
+			en.y = en.y - 10
+			randomEsqDir = math.random(1, 2)
+			if (randomEsqDir == 1) then
+				en.x = en.x - 7
 			else
-	        en.y = en.y - 5
+				en.x = en.x + 7
+			end
 		end
+
+		transition.to( en[4], { time=1500, x=(player.x), y=(player.y) } )
 	end
 end
 -----------------------------------------------------------------------------------
@@ -206,6 +212,7 @@ local function gameOver()
 		composer.gotoScene("gameOver")
 	end
 end
+
 
 Runtime:addEventListener("enterFrame", gameOver)
 --------------------------------------------------------------------------------------
@@ -287,7 +294,7 @@ function scene:create( event )
 	physics.addBody(player, {radius = 15, isSensor = true})
 	player.myName = "player"
 
-	barraDeVida = display.newImageRect(sceneGroup, "imagens/bgs/life.png", 200, 50)
+	local barraDeVida = display.newImageRect(sceneGroup, "imagens/bgs/life.png", 200, 50)
 	barraDeVida.x = 200
 	barraDeVida.y = alturaTela-alturaTela-100
 
@@ -307,21 +314,31 @@ function scene:create( event )
 	hp4.x = hp3.x + hp3.contentWidth
 	hp4.y = barraDeVida.y
 
-	titleHP = display.newText(sceneGroup, "Vida", hp1.x - 55, barraDeVida.y, native.systemFont, 29)
+	local titleHP = display.newText(sceneGroup, "Vida", hp1.x - 55, barraDeVida.y, native.systemFont, 29)
 
 	profundidade = 100
 
-	indicadorProfundidade = display.newText(sceneGroup, profundidade, larguraTela-100, alturaTela-alturaTela-100, native.systemFont, 29)
+	local indicadorProfundidade = display.newText(sceneGroup, profundidade, larguraTela-100, alturaTela-alturaTela-100, native.systemFont, 29)
 
 	function contadorDeTempo( event )
 		print( "contadorDeTempo called" )
 		profundidade = profundidade + 10
 		print( profundidade )
+
+		if(profundidade == 500) then
+			maxEnemies = maxEnemies + 1
+		end
+
+		if(profundidade == 1000) then
+			maxEnemies = maxEnemies + 4
+		end
+
+		print( maxEnemies )
 	end
 
 	contadorDeTempoTimer = timer.performWithDelay( 1000, contadorDeTempo, 1000 )
 
-	function mostraProfundidade( event )
+local	function mostraProfundidade( event )
 		indicadorProfundidade.text = profundidade
 	end
 
