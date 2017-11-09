@@ -36,13 +36,13 @@ local joystick2
 local function setupController(displayGroup)
 	local joystick1Properties = {
 		nToCRatio = 0.5,
-		radius = 60,
+		radius = 80,
 		x = 200,
 		y = alturaTela,
 		restingXValue = 0,
 		restingYValue = 0,
-		rangeX = 200,
-		rangeY = 200
+		rangeX = 300,
+		rangeY = 300
 	}
 
 	local joystick1Name = "joystick1"
@@ -50,7 +50,7 @@ local function setupController(displayGroup)
 
 	local joystick2Properties = {
 		nToCRatio = 0.5,
-		radius = 60,
+		radius = 80,
 		x = larguraTela - 200,
 		y = alturaTela,
 		restingXValue = 0,
