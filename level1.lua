@@ -98,7 +98,7 @@ local function createEnemy()
 		physics.addBody(newenemy, "dynamic", {width = 40, height = 40, bounce = 0.8})
 		newenemy.myName = "enemy"
 
-		newenemy.y = alturaTela
+		newenemy.y = alturaTela+(alturaTela/4)
 		newenemy.x = math.random(0, (larguraTela))
 		newenemy.isFixedRotation = true
 		newenemy:setLinearVelocity(0, math.random(2, 6))
@@ -150,8 +150,8 @@ local function moveInimigos( event )
 	for i = #enemyTable, 1, -1 do
 		local en = enemyTable[i]
 
-		if(en.y + en.contentHeight < 0) then
-			en.y = alturaTela + en.contentHeight
+		if(en.y + en.contentHeight < -100) then
+			en.y = alturaTela + (alturaTela/4)
 			en.x = math.random((larguraTela - larguraTela + en.contentWidth), (larguraTela + en.contentWidth))
 		else
 			en.y = en.y - 10
