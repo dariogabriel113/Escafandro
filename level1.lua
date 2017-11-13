@@ -152,11 +152,15 @@ local function moveInimigos( event )
 
 		if(en.y + en.contentHeight < -100) then
 			en.y = alturaTela + (alturaTela/4)
-			en.x = math.random((larguraTela - larguraTela + en.contentWidth), (larguraTela + en.contentWidth))
+			en.x = math.random(((larguraTela - larguraTela) + en.contentWidth + (en.contentWidth/2)), (larguraTela - en.contentWidth - (en.contentWidth/2)))
 		else
 			en.y = en.y - 10
 			randomEsqDir = math.random(1, 2)
-			if (randomEsqDir == 1) then
+			if(en.x <= (larguraTela - larguraTela) + en.contentWidth + (en.contentWidth/2)) then
+				en.x = en.x + 7
+			elseif(en.x >= (larguraTela - en.contentWidth - (en.contentWidth/2))) then
+				en.x = en.x - 7
+			elseif (randomEsqDir == 1) then
 				en.x = en.x - 7
 			else
 				en.x = en.x + 7
@@ -175,7 +179,7 @@ local function gameLoop()
 	for i = #enemyTable, 1, -1 do
 		local en = enemyTable[i]
 
-		if(en.x < -500 or en.x > display.contentWidth + 500
+		if(en.x < larguraTela - larguraTela or en.x > larguraTela
 			or en.y < -700 or en.y > display.contentHeight + 500) then
 
 			display.remove(en)
@@ -301,8 +305,18 @@ function scene:create( event )
 	player = display.newImageRect(sceneGroup, "imagens/player/escafandro.png", 70, 70 )
 	player.x = centroX
 	player.y = centroY/4
-	physics.addBody(player, {radius = 15, isSensor = true})
+	physics.addBody(player, {isSensor = true})
 	player.myName = "player"
+
+	local paredeEsquerda = display.newImageRect(sceneGroup, "imagens/bgs/parede.png", larguraTela/8, alturaTela+400)
+	paredeEsquerda.x = larguraTela - larguraTela
+	paredeEsquerda.y = centroY
+	physics.addBody( paredeEsquerda, {isSensor = true}, "static" )
+
+	local paredeDireita = display.newImageRect(sceneGroup, "imagens/bgs/parede.png", larguraTela/8, alturaTela+400)
+	paredeDireita.x = larguraTela
+	paredeDireita.y = centroY
+	physics.addBody( paredeDireita, {isSensor = true}, "static" )
 
 	local barraDeVida = display.newImageRect(sceneGroup, "imagens/bgs/life.png", 200, 50)
 	barraDeVida.x = 200
