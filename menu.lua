@@ -18,7 +18,10 @@ function scene:create( event )
 	background.x = centroX
 	background.y = centroY
 
-	local title = display.newText(sceneGroup, "The Land Of Submarine", centroX, 200, native.systemFont, 44)
+	local title = display.newText(sceneGroup, "Escafandro", centroX, 200, native.systemFont, 44)
+	local imagemPlayer = display.newImageRect( sceneGroup, "imagens/player/escafandro.png", 300, 300 )
+	imagemPlayer.x = centroX
+	imagemPlayer.y = centroY
 
 	local timerExampleButton = display.newText(sceneGroup, "Iniciar", centroX, 810, native.systemFont, 44)
 
