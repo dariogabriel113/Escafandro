@@ -328,7 +328,7 @@ function scene:create( event )
 
 	profundidade = 100
 
-	local indicadorProfundidade = display.newText(sceneGroup, profundidade, larguraTela-100, alturaTela-alturaTela-100, native.systemFont, 29)
+	local indicadorProfundidade = display.newText(sceneGroup, profundidade, centroX, alturaTela+100, native.systemFont, 50)
 
 	function contadorDeTempo( event )
 		print( "contadorDeTempo called" )
