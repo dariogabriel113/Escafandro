@@ -214,6 +214,32 @@ local function vida( event )
 		hp2.alpha = 0
 	end
 end
+
+
+
+contadorOx = 4
+local function removerOxi( event )
+end
+
+local function oxi( event )
+	if (profundidade%50 == 0) then
+		contadorOx = contadorOx-1
+	end
+
+	if (contadorOx == 3) then
+		ox4.alpha = 0
+	elseif (contadorOx == 2) then
+		ox3.alpha = 0
+	elseif (contadorOx == 1) then
+		ox2.alpha = 0
+	elseif (contadorOx == 0) then
+		ox1.alpha = 0
+	end
+
+	if(ox1.alpha == 0) then
+		contadorVida = contadorVida-1
+	end
+end
 --------------------------------------------------------------------------------------
 local function endGame()
 	timer.pause(contadorDeTempoTimer)
@@ -318,12 +344,15 @@ function scene:create( event )
 	paredeDireita.y = centroY
 	physics.addBody( paredeDireita, {isSensor = true}, "static" )
 
+----------------------------------------------------------------------------------------------
+-- Barra de Vida
+----------------------------------------------------------------------------------------------
 	local barraDeVida = display.newImageRect(sceneGroup, "imagens/bgs/life.png", 200, 50)
-	barraDeVida.x = 200
+	barraDeVida.x = 230
 	barraDeVida.y = alturaTela-alturaTela-100
 
 	hp1 = display.newImageRect(sceneGroup, "imagens/bgs/vidaEsquerda.png", 50, 50)
-	hp1.x = barraDeVida.y + barraDeVida.contentWidth + (hp1.contentWidth/2)
+	hp1.x = barraDeVida.x - barraDeVida.contentWidth/2 + (hp1.contentWidth/2)
 	hp1.y = barraDeVida.y
 
 	hp2 = display.newImageRect(sceneGroup, "imagens/bgs/vida.png", 50, 50)
@@ -339,14 +368,41 @@ function scene:create( event )
 	hp4.y = barraDeVida.y
 
 	local titleHP = display.newText(sceneGroup, "Vida", hp1.x - 55, barraDeVida.y, native.systemFont, 29)
+------------------------------------------------------------------------------------------------------------
 
-	profundidade = 100
+----------------------------------------------------------------------------------------------
+-- Barra Oxigênio
+----------------------------------------------------------------------------------------------
+	local barraOx = display.newImageRect(sceneGroup, "imagens/bgs/life.png", 200, 50)
+	barraOx.x = hp4.x + 300
+	barraOx.y = alturaTela-alturaTela-100
+
+	ox1 = display.newImageRect(sceneGroup, "imagens/bgs/vidaEsquerda.png", 50, 50)
+	ox1.x = barraOx.x - barraOx.contentWidth/2 + (ox1.contentWidth/2)
+	ox1.y = barraOx.y
+
+	ox2 = display.newImageRect(sceneGroup, "imagens/bgs/vida.png", 50, 50)
+	ox2.x = ox1.x + ox1.contentWidth
+	ox2.y = barraOx.y
+
+	ox3 = display.newImageRect(sceneGroup, "imagens/bgs/vida.png", 50, 50)
+	ox3.x = ox2.x + ox2.contentWidth
+	ox3.y = barraOx.y
+
+	ox4 = display.newImageRect(sceneGroup, "imagens/bgs/vidaDireita.png", 50, 50)
+	ox4.x = ox3.x + ox3.contentWidth
+	ox4.y = barraOx.y
+
+	local titleOx = display.newText(sceneGroup, "Ox", ox1.x - 55, barraOx.y, native.systemFont, 29)
+------------------------------------------------------------------------------------------------------------
+
+	profundidade = 110
 
 	local indicadorProfundidade = display.newText(sceneGroup, profundidade, centroX, alturaTela+100, native.systemFont, 50)
 
 	function contadorDeTempo( event )
 		print( "contadorDeTempo called" )
-		profundidade = profundidade + 10
+		profundidade = profundidade + 5
 		print( profundidade )
 
 		if(profundidade == 1010) then
@@ -403,7 +459,9 @@ function scene:show( event )
 		Runtime:addEventListener("collision", onCollision)
 		Runtime:addEventListener("enterFrame", moveInimigos)
 		Runtime:addEventListener("enterFrame", vida)
+		--Runtime:addEventListener("enterFrame", oxi)
 		gameLoopTimer = timer.performWithDelay(500, gameLoop, 0)
+		oxiTimer = timer.performWithDelay(1000, oxi, 0)
 	end
 end
 
