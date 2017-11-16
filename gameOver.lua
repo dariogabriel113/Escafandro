@@ -2,8 +2,8 @@ local composer = require( "composer" )
 
 local scene = composer.newScene()
 
-local function gotoTimerBasedExample()
-	composer.gotoScene("level1")
+local function gotoTimerMenu()
+	composer.gotoScene("menu")
 end
 local larguraTela = display.contentWidth
 local alturaTela = display.contentHeight
@@ -15,15 +15,23 @@ function scene:create( event )
 	local centroX = display.contentCenterX
 	local centroY = display.contentCenterY
 
-	local background = display.newImageRect( sceneGroup, "imagens/bgs/bg.png", 800, 1400 )
+	local background = display.newImageRect( sceneGroup, "imagens/bgs/back.png", larguraTela, alturaTela+450 )
 	background.x = centroX
 	background.y = centroY
 
-	local title = display.newText(sceneGroup, "Game Over", centroX, alturaTela-alturaTela, native.systemFont, 50)
+	local fimDeJogoImg = display.newImageRect( sceneGroup, "imagens/bgs/endgame.png", larguraTela/2 + larguraTela/5, alturaTela/3 )
+	fimDeJogoImg.x = centroX
+	fimDeJogoImg.y = alturaTela/4
 
-	local profundidadeTexto = display.newText(sceneGroup, "Profundidade Maxima", centroX, 350, native.systemFont, 44)
-	local profundidadeTotal = display.newText(sceneGroup, profundidade, centroX, 400, native.systemFont, 44)
-	local m = display.newText(sceneGroup, "m", profundidadeTotal.x + profundidadeTotal.contentWidth, 400, native.systemFont, 44)
+	local profundidadeTexto = display.newText(sceneGroup, "PROFUNDIDADE ATINGIDA", centroX, centroY + centroY/3, native.systemFont, 44)
+	local profundidadeTotal = display.newText(sceneGroup, profundidade, centroX, centroY + centroY/2, native.systemFont, 44)
+	local m = display.newText(sceneGroup, "m", profundidadeTotal.x + profundidadeTotal.contentWidth, centroY + centroY/2, native.systemFont, 44)
+
+	local timerExampleButtonMenu = display.newImageRect( sceneGroup, "imagens/botoes/backbtn.png", larguraTela/2 + larguraTela/5, alturaTela/9)
+	timerExampleButtonMenu.x = centroX
+	timerExampleButtonMenu.y = alturaTela
+
+	timerExampleButtonMenu:addEventListener("tap", gotoTimerMenu)
 
 end
 

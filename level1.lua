@@ -8,6 +8,8 @@ physics.setGravity(0, 0)
 
 alturaTela = display.contentHeight
 larguraTela = display.contentWidth
+local centroX = display.contentCenterX
+local centroY = display.contentCenterY
 
 --------------------------------------------------------------------------------------
 -- VIRTUAL CONTROLLER CODE
@@ -37,8 +39,8 @@ local function setupController(displayGroup)
 	local joystick1Properties = {
 		nToCRatio = 0.5,
 		radius = 80,
-		x = 200,
-		y = alturaTela,
+		x = centroX - (centroX/2 + centroX/15),
+		y = alturaTela + alturaTela/35,
 		restingXValue = 0,
 		restingYValue = 0,
 		rangeX = 300,
@@ -51,13 +53,16 @@ local function setupController(displayGroup)
 	local joystick2Properties = {
 		nToCRatio = 0.5,
 		radius = 80,
-		x = larguraTela - 200,
-		y = alturaTela,
+		x = larguraTela - 166,
+		y = alturaTela + 30,
 		restingXValue = 0,
 		restingYValue = 0,
 		rangeX = 600,
 		rangeY = 600
 	}
+
+	print(joystick2Properties.x)
+  print(joystick2Properties.y)
 
 	local joystick2Name = "joystick2"
 	joystick2 = controller:addJoystick(joystick2Name, joystick2Properties)
@@ -91,7 +96,19 @@ local function createEnemy()
 			return true
 		end
 
-		local newenemy = display.newImageRect(mainGroup, "imagens/inimigos/enemy.png" , 100, 100)
+		local enemyEscolhido
+
+		imgEnemy = math.random(1, 3)
+
+		if (imgEnemy == 1) then
+			enemyEscolhido = "imagens/inimigos/purple_octopus.png"
+		elseif (imgEnemy == 2) then
+			enemyEscolhido = "imagens/inimigos/pink_octopus.png"
+		elseif (imgEnemy == 3) then
+			enemyEscolhido = "imagens/inimigos/orange_octopus.png"
+		end
+
+		local newenemy = display.newImageRect(mainGroup, enemyEscolhido , 100, 100)
 
 
 		table.insert(enemyTable, newenemy)
@@ -222,7 +239,7 @@ local function removerOxi( event )
 end
 
 local function oxi( event )
-	if (profundidade%50 == 0) then
+	if (profundidade%19 == 0) then
 		contadorOx = contadorOx-1
 	end
 
@@ -324,22 +341,22 @@ function scene:create( event )
 
 	setupController(uiGroup)
 
-	local background = display.newImageRect(backGroup, "imagens/bgs/bg.png", 800, 1400)
+	local background = display.newImageRect(backGroup, "imagens/bgs/gameplay_back.png", larguraTela, alturaTela+450)
 	background.x = centroX
 	background.y = centroY
 
-	player = display.newImageRect(sceneGroup, "imagens/player/escafandro.png", 70, 70 )
+	player = display.newImageRect(sceneGroup, "imagens/player/escafandro.png", 80, 80 )
 	player.x = centroX
 	player.y = centroY/4
 	physics.addBody(player, {isSensor = true})
 	player.myName = "player"
 
-	local paredeEsquerda = display.newImageRect(sceneGroup, "imagens/bgs/parede.png", larguraTela/8, alturaTela+400)
+	local paredeEsquerda = display.newImageRect(sceneGroup, "imagens/bgs/paredeEsquerda.png", larguraTela/8, alturaTela+400)
 	paredeEsquerda.x = larguraTela - larguraTela
 	paredeEsquerda.y = centroY
 	physics.addBody( paredeEsquerda, {isSensor = true}, "static" )
 
-	local paredeDireita = display.newImageRect(sceneGroup, "imagens/bgs/parede.png", larguraTela/8, alturaTela+400)
+	local paredeDireita = display.newImageRect(sceneGroup, "imagens/bgs/paredeDireita.png", larguraTela/8, alturaTela+400)
 	paredeDireita.x = larguraTela
 	paredeDireita.y = centroY
 	physics.addBody( paredeDireita, {isSensor = true}, "static" )
@@ -396,13 +413,13 @@ function scene:create( event )
 	local titleOx = display.newText(sceneGroup, "Ox", ox1.x - 55, barraOx.y, native.systemFont, 29)
 ------------------------------------------------------------------------------------------------------------
 
-	profundidade = 110
+	profundidade = 10
 
 	local indicadorProfundidade = display.newText(sceneGroup, profundidade, centroX, alturaTela+100, native.systemFont, 50)
 
 	function contadorDeTempo( event )
 		print( "contadorDeTempo called" )
-		profundidade = profundidade + 5
+		profundidade = profundidade + 1
 		print( profundidade )
 
 		if(profundidade == 1010) then
@@ -411,7 +428,19 @@ function scene:create( event )
 			timer.pause(contadorDeTempoTimer)
 			physics.setGravity(0, 0.3)
 
-			maeEnemy = display.newImageRect(sceneGroup, "imagens/inimigos/enemy.png" , 500, 500 )
+			local enemyEscolh
+
+			imgEnemy = math.random(1, 3)
+
+			if (imgEnemy == 1) then
+				enemyEscolh = "imagens/inimigos/purple_octopus.png"
+			elseif (imgEnemy == 2) then
+				enemyEscolh = "imagens/inimigos/pink_octopus.png"
+			elseif (imgEnemy == 3) then
+				enemyEscolh = "imagens/inimigos/orange_octopus.png"
+			end
+
+			maeEnemy = display.newImageRect(sceneGroup, enemyEscolh , 500, 500 )
 			maeEnemy.x = centroX
 			maeEnemy.y = centroY
 			physics.addBody(player, {radius = 15, isSensor = true})
@@ -431,10 +460,10 @@ local	function mostraProfundidade( event )
 		indicadorProfundidade.text = profundidade
 	end
 
-	local menuButton = display.newImageRect(uiGroup, "imagens/botoes/pause.png", 120, 120 )
+	local menuButton = display.newImageRect(uiGroup, "imagens/botoes/pause2.png", 100, 100 )
 	menuButton.x = centroX
 	menuButton.y = alturaTela
-	menuButton.alpha = 0.25
+	menuButton.alpha = 0.5
 	menuButton:addEventListener("tap", endGame)
 
 	Runtime:addEventListener("enterFrame", mostraProfundidade)

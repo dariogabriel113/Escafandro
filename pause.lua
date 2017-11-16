@@ -18,13 +18,21 @@ function scene:create( event )
 	local centroX = display.contentCenterX
 	local centroY = display.contentCenterY
 
-	local background = display.newImageRect( sceneGroup, "imagens/bgs/bg.png", 800, 1400 )
+	local background = display.newImageRect( sceneGroup, "imagens/bgs/back.png", larguraTela, alturaTela+450 )
 	background.x = centroX
 	background.y = centroY
 
-	local title = display.newText(sceneGroup, "Pausado", centroX, 200, native.systemFont, 44)
+  local imgPause = display.newImageRect( sceneGroup, "imagens/botoes/pause.png", 200, 200 )
+	imgPause.x = centroX
+	imgPause.y = centroY/2
 
-	local timerExampleButton = display.newText(sceneGroup, "Continuar", centroX, 810, native.systemFont, 40)
+  local pausado = display.newImageRect( sceneGroup, "imagens/bgs/paused.png", larguraTela/2 + larguraTela/5, alturaTela/6 )
+	pausado.x = centroX
+	pausado.y = centroY
+
+  local timerExampleButton = display.newImageRect( sceneGroup, "imagens/botoes/continuebtn.png", larguraTela/2 + larguraTela/5, alturaTela/9)
+	timerExampleButton.x = centroX
+	timerExampleButton.y = alturaTela
 
 	timerExampleButton:addEventListener("tap", gotoTimerBasedExample)
 end
