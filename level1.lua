@@ -1,6 +1,7 @@
 local composer = require( "composer" )
 
 local scene = composer.newScene()
+composer.recycleOnSceneChange = true
 
 local physics = require("physics")
 physics.start()
@@ -10,6 +11,10 @@ alturaTela = display.contentHeight
 larguraTela = display.contentWidth
 local centroX = display.contentCenterX
 local centroY = display.contentCenterY
+criar = true
+profundidade = 10
+contadorOx = 4
+msmProfundidade = 0
 
 --------------------------------------------------------------------------------------
 -- VIRTUAL CONTROLLER CODE
@@ -61,8 +66,8 @@ local function setupController(displayGroup)
 		rangeY = 600
 	}
 
-	print(joystick2Properties.x)
-  print(joystick2Properties.y)
+	--print(joystick2Properties.x)
+  --print(joystick2Properties.y)
 
 	local joystick2Name = "joystick2"
 	joystick2 = controller:addJoystick(joystick2Name, joystick2Properties)
@@ -121,8 +126,19 @@ local function createEnemy()
 		newenemy:setLinearVelocity(0, math.random(2, 6))
 	end
 end
+------------------
 -------------------------------------------------------------------------------
+local function createOxi()
+	if(criar == true) then
+		oxigenio = display.newImageRect(mainGroup, "imagens/bgs/vida.png", 100, 100)
+		physics.addBody(oxigenio, "dynamic", {isSensor = true, width = 40, height = 40, bounce = 0.8})
+		oxigenio.myName = "oxigenio"
 
+		oxigenio.y = centroX
+		oxigenio.x = centroY
+		oxigenio.isFixedRotation = true
+	end
+end
 -----------------------------------------------------------------
 local function setupjoystick1()
 	movementTimer = timer.performWithDelay(100, movePlayer, 0)
@@ -187,6 +203,18 @@ local function moveInimigos( event )
 		transition.to( en[4], { time=1500, x=(player.x), y=(player.y) } )
 	end
 end
+-------------------------------------------------------------------------------------------------------
+local function moveOxigenio( event )
+	for i = 0, 4 do
+		if (oxigenio.y + oxigenio.contentHeight < 0) then
+			oxigenio.y = alturaTela + oxigenio.contentHeight
+			--oxigenio.x = math.random((larguraTela - larguraTela + oxigenio.contentWidth), (larguraTela+ oxigenio.contentWidth))
+			oxigenio.x = centroX
+		else
+			oxigenio.y = oxigenio.y - 1
+		end
+	end
+end
 -----------------------------------------------------------------------------------
 local function gameLoop()
 	if(parar == 1) then
@@ -232,85 +260,170 @@ local function vida( event )
 	end
 end
 
-
-
-contadorOx = 4
-local function removerOxi( event )
-end
-
 local function oxi( event )
-	if (profundidade%19 == 0) then
-		contadorOx = contadorOx-1
+	passe = false
+	
+	if(profundidade == 15) then
+		profundidade = 15
+		contadorOx = 4
+	end
+	
+	if (profundidade ~= msmProfundidade and profundidade == 20 or profundidade == 40 or profundidade == 60 or profundidade == 80 or profundidade == 100 or profundidade%105 == 0) then
+		print("chamando decremento")
+		print(profundidade)
+		if(contadorOx >= 0) then
+			if(contadorOx == 4 and passe == false) then
+				contadorOx = 3
+				print("contadorOx = 3")
+				print(passe)
+				passe = true
+				print(passe)
+				msmProfundidade = profundidade
+			elseif(contadorOx == 3 and passe == false and profundidade ~= msmProfundidade) then
+				contadorOx = 2
+				print("contadorOx = 2")
+				print(passe)
+				passe = true
+				print(passe)
+				msmProfundidade = profundidade
+			elseif(contadorOx == 2 and passe == false and profundidade ~= msmProfundidade) then
+				contadorOx = 1
+				print("contadorOx = 1")
+				print(passe)
+				passe = true
+				print(passe)
+				msmProfundidade = profundidade
+			elseif(contadorOx == 1 and passe == false and profundidade ~= msmProfundidade) then
+				contadorOx = 0
+				print("contadorOx = 0")
+				print(passe)
+				passe = true
+				print(passe)
+				msmProfundidade = profundidade
+			end
+		end
+		if(contadorOx < 4 and criar == true) then
+			createOxi()
+			criar = false
+			Runtime:addEventListener("enterFrame", moveOxigenio)
+		end
 	end
 
-	if (contadorOx == 3) then
+	--if (contadorOx == 3) then
+		--ox4.alpha = 0
+	--elseif (contadorOx == 2) then
+		--ox3.alpha = 0 
+
+	--elseif (contadorOx == 1) then
+		--ox2.alpha = 0
+	--elseif (contadorOx == 0) then
+		--ox1.alpha = 0
+	--end
+
+	if(contadorOx == 4) then
+		ox4.alpha = 1
+		ox3.alpha = 1
+		ox2.alpha = 1
+		ox1.alpha = 1
+	elseif(contadorOx == 3) then
 		ox4.alpha = 0
-	elseif (contadorOx == 2) then
+		ox3.alpha = 1
+		ox2.alpha = 1
+		ox1.alpha = 1
+	elseif(contadorOx == 2) then
+		ox4.alpha = 0
 		ox3.alpha = 0
-	elseif (contadorOx == 1) then
+		ox2.alpha = 1
+		ox1.alpha = 1
+	elseif(contadorOx == 1) then
+		ox4.alpha = 0
+		ox3.alpha = 0
 		ox2.alpha = 0
-	elseif (contadorOx == 0) then
+		ox1.alpha = 1
+	elseif(contadorOx == 0) then
+		ox4.alpha = 0
+		ox3.alpha = 0
+		ox2.alpha = 0
 		ox1.alpha = 0
 	end
 
-	if(ox1.alpha == 0) then
+	if(ox1.alpha == 0 and contadorOx <= 0) then
 		contadorVida = contadorVida-1
 	end
+	passe = false
 end
 --------------------------------------------------------------------------------------
 local function endGame()
+	timer.pause(gameLoopTimer)
+	print("gameLoopTimer")
+	timer.pause(fireTimer)
+	print("fireTimer")
+	timer.pause(movementTimer)
+	print("movementTimer")
 	timer.pause(contadorDeTempoTimer)
+	print("contadorDeTempoTimer")
 	composer.gotoScene("pause")
 end
 
 local function gameOver()
 	if(contadorVida <= 0) then
+		timer.cancel(gameLoopTimer)
+		timer.cancel(fireTimer)
+		timer.cancel(movementTimer)
 		timer.cancel(contadorDeTempoTimer)
 		composer.gotoScene("gameOver")
 	end
+	--print(contadorOx)
 end
 
 
 Runtime:addEventListener("enterFrame", gameOver)
 --------------------------------------------------------------------------------------
-
+print(contadorOx)
 -------------------------------------------------------------------------------------
 local function onCollision(event)
 	if(event.phase == "began") then
 		local ob1 = event.object1
 		local ob2 = event.object2
-
-		if((ob1.myName == "bullet" and ob2.myName == "enemy")
-		or (ob1.myName == "enemy" and ob2.myName == "bullet"))
-		then
+		
+		if((ob1.myName == "bullet" and ob2.myName == "enemy") or (ob1.myName == "enemy" and ob2.myName == "bullet")) then
 			display.remove(ob1)
 			display.remove(ob2)
-
 			audio.play(explosionSound)
-
+			
 			for i = #enemyTable, 1, -1 do
 				if(enemyTable[i] == ob1 or enemyTable[i] == ob2) then
 					table.remove(enemyTable, i)
 					break
 				end
 			end
-
-
-		elseif(ob1.myName == "player" and ob2.myName == "enemy" or
-				ob1.myName == "enemy" and ob2.myName == "player")
-		then
-			if(died == false) then
-				died = true
+		
+		elseif(ob1.myName == "player" and ob2.myName == "enemy" or ob1.myName == "enemy" and ob2.myName == "player") then 
+			if(died == false) then 
+				died = true 
 				contadorVida = contadorVida-1
-
 				player.alpha = 0
 				transition.to(player, {x = centroX, y = centroY/4, time = 1000,
-					onComplete = function()
-						died = false
-						player.alpha = 1
-					end
+				onComplete = function()
+					died = false
+					player.alpha = 1
+				end
 				})
 			end
+		
+		elseif(ob1.myName == "player" and ob2.myName == "oxigenio" or ob1.myName == "oxigenio" and ob2.myName == "player") then
+			print(contadorOx)
+			if(contadorOx < 4) then
+				contadorOx = contadorOx + 1
+				criar = false
+				--if(ob1.myName == "oxigenio") then
+					--display.remove(ob1)
+				--elseif(ob2.myName == "oxigenio") then
+					--display.remove(ob2)
+				--end
+				
+			end
+			print(contadorOx)
 		end
 	end
 end
@@ -413,14 +526,12 @@ function scene:create( event )
 	local titleOx = display.newText(sceneGroup, "Ox", ox1.x - 55, barraOx.y, native.systemFont, 29)
 ------------------------------------------------------------------------------------------------------------
 
-	profundidade = 10
-
 	local indicadorProfundidade = display.newText(sceneGroup, profundidade, centroX, alturaTela+100, native.systemFont, 50)
 
 	function contadorDeTempo( event )
-		print( "contadorDeTempo called" )
+		--print( "contadorDeTempo called" )
 		profundidade = profundidade + 1
-		print( profundidade )
+		--print( profundidade )
 
 		if(profundidade == 1010) then
 			maxEnemies = maxEnemies - 9
@@ -451,16 +562,16 @@ function scene:create( event )
 				maxEnemies = maxEnemies + 4
 		end
 
-		print( maxEnemies )
+		--print( maxEnemies )
 	end
 
 	contadorDeTempoTimer = timer.performWithDelay( 1000, contadorDeTempo, 1000 )
 
-local	function mostraProfundidade( event )
-		indicadorProfundidade.text = profundidade
-	end
+function mostraProfundidade( event )
+	indicadorProfundidade.text = profundidade
+end
 
-	local menuButton = display.newImageRect(uiGroup, "imagens/botoes/pause2.png", 100, 100 )
+local menuButton = display.newImageRect(uiGroup, "imagens/botoes/pause2.png", 100, 100 )
 	menuButton.x = centroX
 	menuButton.y = alturaTela
 	menuButton.alpha = 0.5
@@ -490,7 +601,12 @@ function scene:show( event )
 		Runtime:addEventListener("enterFrame", vida)
 		--Runtime:addEventListener("enterFrame", oxi)
 		gameLoopTimer = timer.performWithDelay(500, gameLoop, 0)
-		oxiTimer = timer.performWithDelay(1000, oxi, 0)
+		--oxiTimer = timer.performWithDelay(1000, oxi, 0)
+		--if(profundidade%10 == 0) then
+		oxiTimer = timer.performWithDelay(1000, oxi, 2000)
+			--Runtime:addEventListener("enterFrame", oxi)
+		--end
+		
 	end
 end
 
@@ -502,17 +618,18 @@ function scene:hide( event )
 	local phase = event.phase
 
 	if ( phase == "will" ) then
-		timer.pause(gameLoopTimer)
-		timer.pause(fireTimer)
-		timer.pause(movementTimer)
 
 	elseif ( phase == "did" ) then
 		-- Code here runs immediately after the scene goes entirely off screen
 		Runtime:removeEventListener("collision", onCollision)
 		Runtime:removeEventListener("enterFrame", moveInimigos)
 		Runtime:removeEventListener("enterFrame", vida)
+		Runtime:removeEventListener("enterFrame", gameOver)
+		Runtime:removeEventListener("enterFrame", moveOxigenio)
+		Runtime:removeEventListener("enterFrame", mostraProfundidade)
 		physics.pause()
 		composer.removeScene("timerbasedexample")
+		--display.remove(sceneGroup)		
 	end
 end
 

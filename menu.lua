@@ -1,8 +1,11 @@
 local composer = require( "composer" )
 
 local scene = composer.newScene()
-
+--display.remove(sceneGroup)
 local function gotoTimerBasedExample()
+	contadorOx = 4
+	profundidade = 10
+	criar = true
 	composer.gotoScene("level1")
 end
 

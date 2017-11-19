@@ -1,8 +1,13 @@
 local composer = require( "composer" )
 
 local scene = composer.newScene()
+composer.recycleOnSceneChange = true
 
 local function gotoTimerMenu()
+	timer.cancel(contadorDeTempoTimer)
+	timer.cancel(gameLoopTimer)
+	timer.cancel(fireTimer)
+	timer.cancel(movementTimer)
 	composer.gotoScene("menu")
 end
 local larguraTela = display.contentWidth
@@ -59,6 +64,7 @@ function scene:hide( event )
 		-- Code here runs when the scene is on screen (but is about to go off screen)
 	elseif ( phase == "did" ) then
 		-- Code here runs immediately after the scene goes entirely off screen
+		display.remove(sceneGroup)
 	end
 end
 

@@ -7,7 +7,7 @@ local function gotoTimerBasedExample()
   timer.resume(gameLoopTimer)
   timer.resume(fireTimer)
   timer.resume(movementTimer)
-	composer.gotoScene("level1")
+  composer.gotoScene("level1")
 end
 
 -- create()
