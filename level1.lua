@@ -19,6 +19,7 @@ criado = false
 capturaProfundidade = 0
 atirou = false
 semMensagemEsquerda = false
+comAlpha = false
 
 --------------------------------------------------------------------------------------
 -- VIRTUAL CONTROLLER CODE
@@ -150,6 +151,7 @@ local function createOxi()
 		newOxigenio.y = alturaTela + alturaTela/5
 		newOxigenio.x = math.random(0, (larguraTela))
 		newOxigenio.isFixedRotation = true
+		newOxigenio.alpha = 1
 	end
 	criado = true
 end
@@ -223,9 +225,16 @@ local function moveOxigenio( event )
 	if(criado == true) then
 		for i = #oxigenioTable, 1, -1 do
 			local oxi = oxigenioTable[i]
+
+			if(comAlpha == true) then
+				oxi.alpha = 0
+			end
 			
 			if (oxi.y + oxi.contentHeight < -100) then
 				if(profundidade%25 == 0) then
+					if(comAlpha == false) then
+						oxi.alpha = 1
+					end
 					oxi.y = alturaTela + (alturaTela/4)
 					--oxigenio.x = math.random((larguraTela - larguraTela + oxigenio.contentWidth), (larguraTela+ oxigenio.contentWidth))
 					oxi.x = math.random(0, (larguraTela))
@@ -265,8 +274,9 @@ end
 contadorVida = 4
 local function vida( event )
 
-  if (player.y < (alturaTela - alturaTela) - 200) then
-    player.y = alturaTela - alturaTela
+  if (player.y < (alturaTela - alturaTela) - 200 or player.y > alturaTela + 200 or player.x <= player.contentWidth or player.x >= larguraTela - player.contentWidth) then
+	player.y = alturaTela - alturaTela
+	player.x = centroX
     contadorVida = contadorVida-1
   end
 	if (contadorVida == 3) then
@@ -301,6 +311,7 @@ local function oxi( event )
 				passe = true
 				--print(passe)
 				msmProfundidade = profundidade
+				comAlpha = false
 			elseif(contadorOx == 3 and passe == false and profundidade ~= msmProfundidade) then
 				contadorOx = 2
 				print("contadorOx = 2")
@@ -308,6 +319,7 @@ local function oxi( event )
 				passe = true
 				--print(passe)
 				msmProfundidade = profundidade
+				comAlpha = false
 			elseif(contadorOx == 2 and passe == false and profundidade ~= msmProfundidade) then
 				contadorOx = 1
 				print("contadorOx = 1")
@@ -315,6 +327,7 @@ local function oxi( event )
 				passe = true
 				--print(passe)
 				msmProfundidade = profundidade
+				comAlpha = false
 			elseif(contadorOx == 1 and passe == false and profundidade ~= msmProfundidade) then
 				contadorOx = 0
 				print("contadorOx = 0")
@@ -322,6 +335,7 @@ local function oxi( event )
 				passe = true
 				--print(passe)
 				msmProfundidade = profundidade
+				comAlpha = false
 			end
 		end
 		if(contadorOx < 4 and criar == true) then
@@ -439,12 +453,7 @@ local function onCollision(event)
 			if(contadorOx < 4) then
 				contadorOx = contadorOx + 1
 				criar = false
-				--if(ob1.myName == "oxigenio") then
-					--display.remove(ob1)
-				--elseif(ob2.myName == "oxigenio") then
-					--display.remove(ob2)
-				--end
-				
+				comAlpha = true
 			end
 			print(contadorOx)
 		end
