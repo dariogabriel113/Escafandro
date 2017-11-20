@@ -16,6 +16,9 @@ profundidade = 10
 contadorOx = 4
 msmProfundidade = 0
 criado = false
+capturaProfundidade = 0
+atirou = false
+semMensagemEsquerda = false
 
 --------------------------------------------------------------------------------------
 -- VIRTUAL CONTROLLER CODE
@@ -46,7 +49,7 @@ local function setupController(displayGroup)
 		nToCRatio = 0.5,
 		radius = 80,
 		x = centroX - (centroX/2 + centroX/15),
-		y = alturaTela + alturaTela/35,
+		y = alturaTela,
 		restingXValue = 0,
 		restingYValue = 0,
 		rangeX = 300,
@@ -60,7 +63,7 @@ local function setupController(displayGroup)
 		nToCRatio = 0.5,
 		radius = 80,
 		x = larguraTela - 166,
-		y = alturaTela + 30,
+		y = alturaTela,
 		restingXValue = 0,
 		restingYValue = 0,
 		rangeX = 600,
@@ -86,7 +89,7 @@ centroX = display.contentCenterX
 centroY = display.contentCenterY
 
 local enemyTable = {}
-maxEnemies = 5
+maxEnemies = 0
 
 local oxigenioTable = {}
 maxOxigenio = 1
@@ -138,13 +141,14 @@ local function createOxi()
 	end
 
 	if(criar == true) then
-		local newOxigenio = display.newImageRect(mainGroup, "imagens/bgs/vida.png", 100, 100)
+		print("oxi criado")
+		local newOxigenio = display.newImageRect(mainGroup, "imagens/oxi.png", 500, 400)
 		table.insert(oxigenioTable, newOxigenio)
-		physics.addBody(newOxigenio, "dynamic", {isSensor = true})
+		physics.addBody(newOxigenio, "dynamic", {isSensor = true, width = 40, height = 40})
 		newOxigenio.myName = "oxigenio"
 
-		newOxigenio.y = centroX
-		newOxigenio.x = centroY
+		newOxigenio.y = alturaTela + alturaTela/5
+		newOxigenio.x = math.random(0, (larguraTela))
 		newOxigenio.isFixedRotation = true
 	end
 	criado = true
@@ -185,7 +189,8 @@ function fireSinglebullet()
 	transition.to(newbullet, {x = player.x + pos.x, y = player.y + pos.y, time = 500,
 		onComplete = function() display.remove( newbullet ) end
 	})
-
+	atirou = true
+	
 	return true
 end
 --------------------------------------------------------------------------------------
@@ -220,11 +225,14 @@ local function moveOxigenio( event )
 			local oxi = oxigenioTable[i]
 			
 			if (oxi.y + oxi.contentHeight < -100) then
-				oxi.y = alturaTela + (alturaTela/4)
-				--oxigenio.x = math.random((larguraTela - larguraTela + oxigenio.contentWidth), (larguraTela+ oxigenio.contentWidth))
-				oxi.x = centroX
+				if(profundidade%25 == 0) then
+					oxi.y = alturaTela + (alturaTela/4)
+					--oxigenio.x = math.random((larguraTela - larguraTela + oxigenio.contentWidth), (larguraTela+ oxigenio.contentWidth))
+					oxi.x = math.random(0, (larguraTela))
+					print("move oxi la de baixo")
+				end
 			else
-				oxi.y = oxi.y - 1
+				oxi.y = oxi.y - 4
 			end
 		end
 	end
@@ -284,35 +292,35 @@ local function oxi( event )
 
 	if (profundidade ~= msmProfundidade and profundidade == 20 or profundidade == 40 or profundidade == 60 or profundidade == 80 or profundidade == 100 or profundidade%25 == 0) then
 		print("chamando decremento")
-		print(profundidade)
+		--print(profundidade)
 		if(contadorOx >= 0) then
 			if(contadorOx == 4 and passe == false) then
 				contadorOx = 3
 				print("contadorOx = 3")
-				print(passe)
+				--print(passe)
 				passe = true
-				print(passe)
+				--print(passe)
 				msmProfundidade = profundidade
 			elseif(contadorOx == 3 and passe == false and profundidade ~= msmProfundidade) then
 				contadorOx = 2
 				print("contadorOx = 2")
-				print(passe)
+				--print(passe)
 				passe = true
-				print(passe)
+				--print(passe)
 				msmProfundidade = profundidade
 			elseif(contadorOx == 2 and passe == false and profundidade ~= msmProfundidade) then
 				contadorOx = 1
 				print("contadorOx = 1")
-				print(passe)
+				--print(passe)
 				passe = true
-				print(passe)
+				--print(passe)
 				msmProfundidade = profundidade
 			elseif(contadorOx == 1 and passe == false and profundidade ~= msmProfundidade) then
 				contadorOx = 0
 				print("contadorOx = 0")
-				print(passe)
+				--print(passe)
 				passe = true
-				print(passe)
+				--print(passe)
 				msmProfundidade = profundidade
 			end
 		end
@@ -367,17 +375,17 @@ local function oxi( event )
 	passe = false
 end
 --------------------------------------------------------------------------------------
-local function endGame()
-	timer.pause(gameLoopTimer)
-	print("gameLoopTimer")
-	timer.pause(fireTimer)
-	print("fireTimer")
-	timer.pause(movementTimer)
-	print("movementTimer")
-	timer.pause(contadorDeTempoTimer)
-	print("contadorDeTempoTimer")
-	composer.gotoScene("pause")
-end
+--local function endGame()
+--	timer.pause(gameLoopTimer)
+--	print("gameLoopTimer")
+--	timer.pause(fireTimer)
+--	print("fireTimer")
+--	timer.pause(movementTimer)
+--	print("movementTimer")
+--	timer.pause(contadorDeTempoTimer)
+--	print("contadorDeTempoTimer")
+--	composer.gotoScene("pause")
+--end
 
 local function gameOver()
 	if(contadorVida <= 0) then
@@ -385,6 +393,7 @@ local function gameOver()
 		timer.cancel(fireTimer)
 		timer.cancel(movementTimer)
 		timer.cancel(contadorDeTempoTimer)
+		timer.cancel(oxiTimer)
 		composer.gotoScene("gameOver")
 	end
 	--print(contadorOx)
@@ -537,6 +546,16 @@ function scene:create( event )
 	ox4.x = ox3.x + ox3.contentWidth
 	ox4.y = barraOx.y
 
+	mensagemEsquerda = display.newImageRect(sceneGroup, "imagens/bgs/mensagensEsquerda.png", 300, 300)
+	mensagemEsquerda.x = centroX
+	mensagemEsquerda.y = centroY
+	mensagemEsquerda.alpha = 0.3
+
+	mensagemDireita = display.newImageRect(sceneGroup, "imagens/bgs/mensagensDireita.png", 300, 300)
+	mensagemDireita.x = centroX
+	mensagemDireita.y = centroY
+	mensagemDireita.alpha = 0
+
 	local titleOx = display.newText(sceneGroup, "Ox", ox1.x - 55, barraOx.y, native.systemFont, 29)
 ------------------------------------------------------------------------------------------------------------
 
@@ -547,11 +566,40 @@ function scene:create( event )
 		profundidade = profundidade + 1
 		--print( profundidade )
 
-		if(profundidade == 1010) then
-			maxEnemies = maxEnemies - 9
+		if(player.x ~= centroX and player.x ~= centroY/4) then
+			display.remove( mensagemEsquerda )
+			semMensagemEsquerda = true
+		end
+
+		if(semMensagemEsquerda == true) then
+			mensagemDireita.alpha = 0.3
+		end
+
+		if(atirou == true) then
+			display.remove( mensagemDireita )
+		end
+
+		if(atirou == true and profundidade == 20) then
+			maxEnemies = maxEnemies + 1
+		end
+
+		if(profundidade == 30) then
+			maxEnemies = maxEnemies + 1
+		end
+
+		if(profundidade == 40) then
+			maxEnemies = maxEnemies + 1
+		end
+
+		if(profundidade == 100) then
+			maxEnemies = 5
+		end
+
+		if(profundidade == 300) then
+			maxEnemies = 0
 			parar = 0
 			timer.pause(contadorDeTempoTimer)
-			physics.setGravity(0, 0.3)
+			--physics.setGravity(0, 0.3)
 
 			local enemyEscolh
 
@@ -570,10 +618,10 @@ function scene:create( event )
 			maeEnemy.y = centroY
 			physics.addBody(player, {radius = 15, isSensor = true})
 			maeEnemy.myName = "maeEnemy"
-		elseif(profundidade == 500) then
-			maxEnemies = maxEnemies + 1
-		elseif(profundidade == 1000) then
-				maxEnemies = maxEnemies + 4
+		--elseif(profundidade == 500) then
+			--maxEnemies = maxEnemies + 1
+		--elseif(profundidade == 1000) then
+				--maxEnemies = maxEnemies + 4
 		end
 
 		--print( maxEnemies )
@@ -585,11 +633,11 @@ function scene:create( event )
 		indicadorProfundidade.text = profundidade
 	end
 
-	local menuButton = display.newImageRect(uiGroup, "imagens/botoes/pause2.png", 100, 100 )
-	menuButton.x = centroX
-	menuButton.y = alturaTela
-	menuButton.alpha = 0.5
-	menuButton:addEventListener("tap", endGame)
+	--local menuButton = display.newImageRect(uiGroup, "imagens/botoes/pause2.png", 100, 100 )
+	--menuButton.x = centroX
+	--menuButton.y = alturaTela
+	--menuButton.alpha = 0.5
+	--menuButton:addEventListener("tap", endGame)
 
 	Runtime:addEventListener("enterFrame", mostraProfundidade)
 

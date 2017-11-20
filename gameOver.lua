@@ -8,6 +8,7 @@ local function gotoTimerMenu()
 	timer.cancel(gameLoopTimer)
 	timer.cancel(fireTimer)
 	timer.cancel(movementTimer)
+	timer.cancel(oxiTimer)
 	composer.gotoScene("menu")
 end
 local larguraTela = display.contentWidth
