@@ -9,12 +9,13 @@ physics.setGravity(0, 0)
 
 alturaTela = display.contentHeight
 larguraTela = display.contentWidth
-local centroX = display.contentCenterX
-local centroY = display.contentCenterY
+centroX = display.contentCenterX
+centroY = display.contentCenterY
 criar = true
 profundidade = 10
 contadorOx = 4
 msmProfundidade = 0
+criado = false
 
 --------------------------------------------------------------------------------------
 -- VIRTUAL CONTROLLER CODE
@@ -65,9 +66,9 @@ local function setupController(displayGroup)
 		rangeX = 600,
 		rangeY = 600
 	}
-
+	
 	--print(joystick2Properties.x)
-  --print(joystick2Properties.y)
+	--print(joystick2Properties.y)
 
 	local joystick2Name = "joystick2"
 	joystick2 = controller:addJoystick(joystick2Name, joystick2Properties)
@@ -86,6 +87,9 @@ centroY = display.contentCenterY
 
 local enemyTable = {}
 maxEnemies = 5
+
+local oxigenioTable = {}
+maxOxigenio = 1
 
 local died = false
 
@@ -129,15 +133,21 @@ end
 ------------------
 -------------------------------------------------------------------------------
 local function createOxi()
-	if(criar == true) then
-		oxigenio = display.newImageRect(mainGroup, "imagens/bgs/vida.png", 100, 100)
-		physics.addBody(oxigenio, "dynamic", {isSensor = true, width = 40, height = 40, bounce = 0.8})
-		oxigenio.myName = "oxigenio"
-
-		oxigenio.y = centroX
-		oxigenio.x = centroY
-		oxigenio.isFixedRotation = true
+	if(#oxigenioTable == maxOxigenio) then
+		return true
 	end
+
+	if(criar == true) then
+		local newOxigenio = display.newImageRect(mainGroup, "imagens/bgs/vida.png", 100, 100)
+		table.insert(oxigenioTable, newOxigenio)
+		physics.addBody(newOxigenio, "dynamic", {isSensor = true})
+		newOxigenio.myName = "oxigenio"
+
+		newOxigenio.y = centroX
+		newOxigenio.x = centroY
+		newOxigenio.isFixedRotation = true
+	end
+	criado = true
 end
 -----------------------------------------------------------------
 local function setupjoystick1()
@@ -205,16 +215,20 @@ local function moveInimigos( event )
 end
 -------------------------------------------------------------------------------------------------------
 local function moveOxigenio( event )
-	for i = 0, 4 do
-		if (oxigenio.y + oxigenio.contentHeight < 0) then
-			oxigenio.y = alturaTela + oxigenio.contentHeight
-			--oxigenio.x = math.random((larguraTela - larguraTela + oxigenio.contentWidth), (larguraTela+ oxigenio.contentWidth))
-			oxigenio.x = centroX
-		else
-			oxigenio.y = oxigenio.y - 1
+	if(criado == true) then
+		for i = #oxigenioTable, 1, -1 do
+			local oxi = oxigenioTable[i]
+			
+			if (oxi.y + oxi.contentHeight < -100) then
+				oxi.y = alturaTela + (alturaTela/4)
+				--oxigenio.x = math.random((larguraTela - larguraTela + oxigenio.contentWidth), (larguraTela+ oxigenio.contentWidth))
+				oxi.x = centroX
+			else
+				oxi.y = oxi.y - 1
+			end
 		end
 	end
-end
+end  
 -----------------------------------------------------------------------------------
 local function gameLoop()
 	if(parar == 1) then
@@ -262,13 +276,13 @@ end
 
 local function oxi( event )
 	passe = false
-	
+
 	if(profundidade == 15) then
 		profundidade = 15
 		contadorOx = 4
 	end
-	
-	if (profundidade ~= msmProfundidade and profundidade == 20 or profundidade == 40 or profundidade == 60 or profundidade == 80 or profundidade == 100 or profundidade%105 == 0) then
+
+	if (profundidade ~= msmProfundidade and profundidade == 20 or profundidade == 40 or profundidade == 60 or profundidade == 80 or profundidade == 100 or profundidade%25 == 0) then
 		print("chamando decremento")
 		print(profundidade)
 		if(contadorOx >= 0) then
@@ -566,12 +580,12 @@ function scene:create( event )
 	end
 
 	contadorDeTempoTimer = timer.performWithDelay( 1000, contadorDeTempo, 1000 )
+	
+	local function mostraProfundidade( event )
+		indicadorProfundidade.text = profundidade
+	end
 
-function mostraProfundidade( event )
-	indicadorProfundidade.text = profundidade
-end
-
-local menuButton = display.newImageRect(uiGroup, "imagens/botoes/pause2.png", 100, 100 )
+	local menuButton = display.newImageRect(uiGroup, "imagens/botoes/pause2.png", 100, 100 )
 	menuButton.x = centroX
 	menuButton.y = alturaTela
 	menuButton.alpha = 0.5
@@ -583,16 +597,13 @@ local menuButton = display.newImageRect(uiGroup, "imagens/botoes/pause2.png", 10
 	setupjoystick1()
 end
 
-
 -- show()
 function scene:show( event )
-
 	local sceneGroup = self.view
 	local phase = event.phase
-
+	
 	if ( phase == "will" ) then
 		-- Code here runs when the scene is still off screen (but is about to come on screen)
-
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
 		physics.start()
@@ -604,21 +615,18 @@ function scene:show( event )
 		--oxiTimer = timer.performWithDelay(1000, oxi, 0)
 		--if(profundidade%10 == 0) then
 		oxiTimer = timer.performWithDelay(1000, oxi, 2000)
-			--Runtime:addEventListener("enterFrame", oxi)
+		--Runtime:addEventListener("enterFrame", oxi)
 		--end
-		
 	end
 end
 
-
 -- hide()
 function scene:hide( event )
-
 	local sceneGroup = self.view
 	local phase = event.phase
-
+	
 	if ( phase == "will" ) then
-
+	
 	elseif ( phase == "did" ) then
 		-- Code here runs immediately after the scene goes entirely off screen
 		Runtime:removeEventListener("collision", onCollision)
@@ -629,7 +637,7 @@ function scene:hide( event )
 		Runtime:removeEventListener("enterFrame", mostraProfundidade)
 		physics.pause()
 		composer.removeScene("timerbasedexample")
-		--display.remove(sceneGroup)		
+		--display.remove(sceneGroup)
 	end
 end
 

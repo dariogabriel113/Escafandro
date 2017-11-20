@@ -1,7 +1,7 @@
 local composer = require( "composer" )
 
 local scene = composer.newScene()
-composer.recycleOnSceneChange = true
+--composer.recycleOnSceneChange = true
 
 local function gotoTimerMenu()
 	timer.cancel(contadorDeTempoTimer)
@@ -12,6 +12,7 @@ local function gotoTimerMenu()
 end
 local larguraTela = display.contentWidth
 local alturaTela = display.contentHeight
+
 -- create()
 function scene:create( event )
 
