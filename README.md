@@ -1,5 +1,4 @@
-# Nome do Jogo:
-Escafandro
+# Escafandro
 
 ## Enredo:
 Um mergulhador busca um tesouro antigo perdido no fundo do mar.
