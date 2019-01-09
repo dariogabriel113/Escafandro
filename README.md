@@ -4,7 +4,7 @@
 Um mergulhador busca um tesouro antigo perdido no fundo do mar.
 
 ## Objetivo:
-Manter vivo, enfrentar monstros e encontrar todos os Tesouros.
+Manter vivo e enfrentar os monstros marinhos.
 
 # Objetivos específicos:
 Encontrar itens de Oxigênio; Enfrentar Chefões; Chegar a Terra dos Submarinos;
